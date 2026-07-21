@@ -27,7 +27,7 @@
 
   },
 
-  "stage": 1,
+  "current_state":"INITIAL_ASSESSMENT"
 
   "hidden_information": {
 
@@ -49,3 +49,18 @@
 
   ]
 }
+"transitions":[
+
+{
+    "trigger":"ORDER_ECG",
+
+    "next_state":"ECG_AVAILABLE"
+}{
+    "trigger":"ORDER_TROPONIN",
+
+    "next_state":"TROPONIN_AVAILABLE"
+}{
+    "trigger":"TIME_10_MIN",
+
+    "next_state":"PATIENT_DETERIORATION"
+}]
