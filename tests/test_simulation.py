@@ -31,3 +31,7 @@ print(state.ecg_visible)
 
 print("Actions:")
 print(state.completed_actions)
+print("\nEvents:")
+
+for event in engine.events:
+    print(event)
