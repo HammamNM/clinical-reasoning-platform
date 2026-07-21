@@ -23,3 +23,15 @@ def create_event(event_type, content):
         event_type=event_type,
         content=content
     )
+class EventStream:
+
+    def __init__(self):
+        self.events = []
+
+
+    def add(self, event):
+        self.events.append(event)
+
+
+    def get_all(self):
+        return self.events
