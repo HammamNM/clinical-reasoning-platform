@@ -1,3 +1,4 @@
+from analytics.event_bridge import EventBridge
 from simulation.state import SimulationState
 from simulation.rules import SimulationRule, RuleEngine
 
@@ -36,3 +37,12 @@ print("\nEvents:")
 for event in engine.events:
     print(event)
 print("TOTAL EVENTS:", len(engine.events))
+bridge = EventBridge()
+
+bridge.collect(engine.events)
+
+
+print("BRIDGED EVENTS:")
+
+for event in bridge.get_events():
+    print(event.event_type, "-", event.content)
