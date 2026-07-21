@@ -1,3 +1,4 @@
+from simulation.clock import SimulationClock
 from dataclasses import dataclass, field
 from datetime import datetime
 import uuid
@@ -17,9 +18,9 @@ class ClinicalSession:
 
     state: SimulationState = field(default_factory=SimulationState)
 
-    event_stream: EventStream = field(default_factory=EventStream)
+event_stream: EventStream = field(default_factory=EventStream)
 
-    started_at: datetime = field(default_factory=datetime.utcnow)
+clock: SimulationClock = field(default_factory=SimulationClock)
 
     finished: bool = False
 
