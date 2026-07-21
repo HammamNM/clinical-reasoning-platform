@@ -27,7 +27,12 @@ class SimulationOrchestrator:
             action,
             self.session.state
         )
+for event in self.rule_engine.events:
 
+    self.session.event_stream.add(event)
+
+
+self.rule_engine.events.clear()
 
         self.session.clock.advance(1)
 
