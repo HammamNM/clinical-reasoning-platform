@@ -1,1 +1,51 @@
+{
+  "scenario_id": "NSTEMI_001",
 
+  "title": "NSTEMI disguised as GERD",
+
+  "difficulty": "Intermediate",
+
+  "patient": {
+
+    "age": 58,
+
+    "sex": "Male",
+
+    "occupation": "Truck Driver"
+
+  },
+
+  "initial_state": {
+
+    "pain_level": 8,
+
+    "blood_pressure": "148/92",
+
+    "heart_rate": 102,
+
+    "sweating": true
+
+  },
+
+  "stage": 1,
+
+  "hidden_information": {
+
+    "ecg": false,
+
+    "troponin": false
+
+  },
+
+  "available_actions": [
+
+    "ORDER_ECG",
+
+    "ORDER_TROPONIN",
+
+    "ORDER_LIPASE",
+
+    "GIVE_ANTACID"
+
+  ]
+}
