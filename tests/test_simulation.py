@@ -35,3 +35,4 @@ print("\nEvents:")
 
 for event in engine.events:
     print(event)
+print("TOTAL EVENTS:", len(engine.events))
