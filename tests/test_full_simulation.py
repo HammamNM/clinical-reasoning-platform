@@ -8,9 +8,7 @@ session = ClinicalSession(
     scenario_id="NSTEMI_001"
 )
 
-
 orchestrator = SimulationOrchestrator(session)
-
 
 orchestrator.rule_engine.add_rule(
     SimulationRule(
@@ -19,33 +17,17 @@ orchestrator.rule_engine.add_rule(
     )
 )
 
+print("TIME:", session.clock.get_time())
 
-print("Initial time:")
-print(session.clock.get_time())
+print("ECG BEFORE:", session.state.ecg_visible)
 
+orchestrator.process_student_action("ORDER_ECG")
 
-print("\nInitial ECG:")
-print(session.state.ecg_visible)
+print("ECG AFTER:", session.state.ecg_visible)
 
+print("TIME:", session.clock.get_time())
 
-orchestrator.process_student_action(
-    "ORDER_ECG"
-)
-
-
-print("\nAfter action ECG:")
-print(session.state.ecg_visible)
-
-
-print("\nCurrent time:")
-print(session.clock.get_time())
-
-
-print("\nEvents:")
+print("EVENTS:")
 
 for event in session.event_stream.get_all():
-    print(
-        event.event_type,
-        "-",
-        event.content
-    )
+    print(event.event_type, event.content)
