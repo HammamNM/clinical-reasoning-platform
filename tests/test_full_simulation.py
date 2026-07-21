@@ -44,7 +44,6 @@ print(session.clock.get_time())
 print("\nEvents:")
 
 for event in session.event_stream.get_all():
-
     print(
         event.event_type,
         "-",
