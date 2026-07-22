@@ -1,3 +1,11 @@
+from simulation.actions import (
+    INVESTIGATION_ACTIONS,
+    THERAPEUTIC_ACTIONS,
+    DIAGNOSTIC_ACTIONS,
+    HISTORY_ACTIONS
+)
+
+from simulation.investigation_engine import InvestigationEngine
 from backend.case_loader import CaseLoader
 from outcome_engine.mapper import OutcomeMapper
 from decision_engine.engine import DecisionEngine
@@ -30,6 +38,8 @@ class SimulationOrchestrator:
      
         self.case_loader = CaseLoader()
 
+        self.investigation_engine = InvestigationEngine()
+    
     def process_student_action(self, action):
 
         outcome_event = (
@@ -99,4 +109,43 @@ class SimulationOrchestrator:
             self.case_loader.load_case(
                 filepath
             )
+        )
+
+    def dispatch_action(
+    self,
+    action
+):
+
+    if action in INVESTIGATION_ACTIONS:
+
+        self.investigation_engine.process_action(
+            action,
+            self.session.active_case,
+            self.session.event_stream
+        )
+
+
+    elif action in THERAPEUTIC_ACTIONS:
+
+        self.rule_engine.process_action(
+            action,
+            self.session.state
+        )
+
+
+    elif action in DIAGNOSTIC_ACTIONS:
+
+        self.rule_engine.process_action(
+            action,
+            self.session.state
+        )
+
+
+    elif action in HISTORY_ACTIONS:
+
+        self.session.event_stream.add(
+            {
+                "event_type": "HISTORY_RESPONSE_REQUEST",
+                "content": action
+            }
         )
