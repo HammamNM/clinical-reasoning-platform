@@ -9,7 +9,6 @@ class DecisionRecorder:
         self.decision_engine = decision_engine
 
 
-
     def record(
         self,
         session,
@@ -24,6 +23,9 @@ class DecisionRecorder:
             )
         )
 
+        session.decision_history.append(
+            profile
+        )
 
         session.event_stream.add(
             {
@@ -31,6 +33,5 @@ class DecisionRecorder:
                 "content": profile
             }
         )
-
 
         return profile
