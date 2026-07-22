@@ -1,3 +1,4 @@
+from backend.case_loader import CaseLoader
 from outcome_engine.mapper import OutcomeMapper
 from decision_engine.engine import DecisionEngine
 from decision_engine.recorder import DecisionRecorder
@@ -26,7 +27,8 @@ class SimulationOrchestrator:
         self.outcome_engine = OutcomeEngine()
 
         self.outcome_mapper = OutcomeMapper()
-
+     
+        self.case_loader = CaseLoader()
 
     def process_student_action(self, action):
 
@@ -87,3 +89,14 @@ class SimulationOrchestrator:
         for event in timeline_events:
 
             self.session.event_stream.add(event)
+
+    def load_case(
+        self,
+        filepath
+    ):
+
+        self.session.active_case = (
+            self.case_loader.load_case(
+                filepath
+            )
+        )
