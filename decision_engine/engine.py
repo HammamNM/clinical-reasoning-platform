@@ -1,3 +1,4 @@
+from decision_engine.evaluators.efficiency_evaluator import EfficiencyEvaluator
 from decision_engine.models import DecisionProfile
 from decision_engine.evaluator_manager import EvaluatorManager
 from decision_engine.evaluators.timing_evaluator import TimingEvaluator
@@ -19,7 +20,9 @@ class DecisionEngine:
     self.register_evaluator(
         SafetyEvaluator()
     ) 
-
+    self.register_evaluator(
+        EfficiencyEvaluator()
+    )
 
     def register_evaluator(
         self,
