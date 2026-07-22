@@ -29,7 +29,14 @@ class DecisionEngine:
         self,
         evaluator
     ):
-
+    total_score = (
+        sum(
+            assessment.score
+            for assessment in assessments
+        )
+        /
+        len(assessments)
+    )
         self.evaluator_manager.register(
             evaluator
         )
@@ -50,6 +57,7 @@ class DecisionEngine:
 
 
         return DecisionProfile(
-            action=action,
-            assessments=assessments
+    action=action,
+    assessments=assessments,
+    total_score=total_score
         )
