@@ -1,3 +1,4 @@
+from decision_engine.models import DecisionProfile
 from outcome_engine.models import PatientOutcome
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -11,6 +12,10 @@ from kernel.events import EventStream
 @dataclass
 class ClinicalSession:
 
+    decision_history: list = field(
+    default_factory=list
+    )
+    
     session_id: str = field(default_factory=lambda: str(uuid.uuid4()))
 
     student_id: str = ""
