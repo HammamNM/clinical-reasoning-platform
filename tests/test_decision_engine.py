@@ -1,4 +1,4 @@
-from simulation.session import ClinicalSession
+from backend.session import ClinicalSession
 
 from decision_engine.engine import DecisionEngine
 
