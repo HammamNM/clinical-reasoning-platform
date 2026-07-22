@@ -1,1 +1,36 @@
+INVESTIGATION_ACTIONS = {
 
+    "ORDER_ECG",
+
+    "ORDER_TROPONIN",
+
+    "ORDER_CBC",
+
+    "ORDER_CXR"
+
+}
+
+
+THERAPEUTIC_ACTIONS = {
+
+    "GIVE_ASPIRIN",
+
+    "GIVE_HEPARIN"
+
+}
+
+
+DIAGNOSTIC_ACTIONS = {
+
+    "MAKE_DIAGNOSIS"
+
+}
+
+
+HISTORY_ACTIONS = {
+
+    "ASK_CHEST_PAIN",
+
+    "ASK_SMOKING"
+
+}
