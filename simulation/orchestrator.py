@@ -43,6 +43,12 @@ class SimulationOrchestrator:
             action
         )
     )
+    self.session.event_stream.add(
+    {
+        "event_type": "DECISION_PROFILE",
+        "content": decision_profile
+    }
+    )
         for event in self.rule_engine.events:
             self.session.event_stream.add(event)
 
