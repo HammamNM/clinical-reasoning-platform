@@ -46,7 +46,9 @@ class SimulationOrchestrator:
             self.outcome_mapper
             .map_action(action)
         )
-
+        self.dispatch_action(
+            action
+        )
         if outcome_event:
 
             self.outcome_engine.process_event(
