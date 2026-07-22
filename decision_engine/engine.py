@@ -4,25 +4,26 @@ from decision_engine.evaluator_manager import EvaluatorManager
 from decision_engine.evaluators.timing_evaluator import TimingEvaluator
 from decision_engine.evaluators.safety_evaluator import SafetyEvaluator
 
+
 class DecisionEngine:
 
 
-   def __init__(self):
+    def __init__(self):
 
-    self.evaluator_manager = EvaluatorManager()
+        self.evaluator_manager = EvaluatorManager()
 
+        self.register_evaluator(
+            TimingEvaluator()
+        )
 
-    self.register_evaluator(
-        TimingEvaluator()
-    )
+        self.register_evaluator(
+            SafetyEvaluator()
+        )
 
+        self.register_evaluator(
+            EfficiencyEvaluator()
+        )
 
-    self.register_evaluator(
-        SafetyEvaluator()
-    ) 
-    self.register_evaluator(
-        EfficiencyEvaluator()
-    )
 
     def register_evaluator(
         self,
@@ -32,7 +33,6 @@ class DecisionEngine:
         self.evaluator_manager.register(
             evaluator
         )
-
 
 
     def evaluate_decision(
@@ -50,6 +50,6 @@ class DecisionEngine:
 
 
         return DecisionProfile(
-    action=action,
-    assessments=assessments
+            action=action,
+            assessments=assessments
         )
