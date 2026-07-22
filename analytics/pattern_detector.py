@@ -76,3 +76,57 @@ class CognitivePatternDetector:
 
 
         return "NO_PATTERN"
+
+    def detect_premature_closure(
+        self,
+        session
+    ):
+
+        reasoning_events = (
+            session.event_stream.events
+        )
+
+
+        if len(reasoning_events) < 3:
+
+            return "INSUFFICIENT_DATA"
+
+
+        confirmation_events = 0
+
+
+        ignored_evidence_events = 0
+
+
+        for event in reasoning_events:
+
+            if (
+                event.get("event_type")
+                ==
+                "CONFIRMATION_ONLY"
+            ):
+
+                confirmation_events += 1
+
+
+            if (
+                event.get("event_type")
+                ==
+                "IGNORED_EVIDENCE"
+            ):
+
+                ignored_evidence_events += 1
+
+
+
+        if (
+            confirmation_events >= 2
+            and
+            ignored_evidence_events >= 1
+        ):
+
+            return "PREMATURE_CLOSURE_PATTERN"
+
+
+
+        return "NO_PATTERN"
