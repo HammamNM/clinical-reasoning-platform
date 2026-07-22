@@ -1,4 +1,5 @@
 from decision_engine.base_evaluator import BaseEvaluator
+from decision_engine.models import DecisionAssessment
 
 
 class TimingEvaluator(BaseEvaluator):
@@ -15,23 +16,26 @@ class TimingEvaluator(BaseEvaluator):
 
         if current_time <= 5:
 
-            return {
-                "dimension": "Timing",
-                "value": 10
-            }
+            return DecisionAssessment(
+                dimension="Timing",
+                score=10,
+                explanation="Decision made within appropriate time window"
+            )
 
 
         elif current_time <= 10:
 
-            return {
-                "dimension": "Timing",
-                "value": 7
-            }
+            return DecisionAssessment(
+                dimension="Timing",
+                score=7,
+                explanation="Decision slightly delayed"
+            )
 
 
         else:
 
-            return {
-                "dimension": "Timing",
-                "value": 3
-            }
+            return DecisionAssessment(
+                dimension="Timing",
+                score=3,
+                explanation="Decision was significantly delayed"
+            )
