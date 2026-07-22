@@ -19,4 +19,6 @@ class DecisionProfile:
 
     assessments: list = field(
         default_factory=list
-    ) 
+    )
+
+    total_score: float = 0.0
