@@ -1,3 +1,7 @@
+from decision_engine.engine import DecisionEngine
+from decision_engine.recorder import DecisionRecorder
+
+from outcome_engine.engine import OutcomeEngine
 from simulation.timeline import TimelineEngine
 from simulation.rules import RuleEngine
 
@@ -5,12 +9,25 @@ from simulation.rules import RuleEngine
 class SimulationOrchestrator:
 
     def __init__(
-        self,
-        session
-    ):
-        self.session = session
-        self.rule_engine = RuleEngine()
-        self.timeline_engine = TimelineEngine()
+    self,
+    session
+):
+
+    self.session = session
+
+    self.rule_engine = RuleEngine()
+
+    self.timeline_engine = TimelineEngine()
+
+
+    self.decision_engine = DecisionEngine()
+
+    self.decision_recorder = DecisionRecorder(
+        self.decision_engine
+    )
+
+
+    self.outcome_engine = OutcomeEngine()
 
     def process_student_action(
         self,
@@ -20,7 +37,12 @@ class SimulationOrchestrator:
             action,
             self.session.state
         )
-
+    decision_profile = (
+        self.decision_recorder.record(
+            self.session,
+            action
+        )
+    )
         for event in self.rule_engine.events:
             self.session.event_stream.add(event)
 
