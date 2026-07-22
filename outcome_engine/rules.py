@@ -6,9 +6,15 @@ class OutcomeRule:
 
     trigger_event: str
 
-    outcome_change: str
-  
-  class OutcomeRuleEngine:
+    status: str
+
+    severity_change: int
+
+    description: str
+
+
+
+class OutcomeRuleEngine:
 
 
     def __init__(self):
@@ -21,9 +27,8 @@ class OutcomeRule:
         rule
     ):
 
-        self.rules.append(
-            rule
-        )
+        self.rules.append(rule)
+
 
 
     def process_event(
@@ -36,6 +41,12 @@ class OutcomeRule:
 
             if rule.trigger_event == event:
 
+                outcome.status = rule.status
+
+                outcome.severity += (
+                    rule.severity_change
+                )
+
                 outcome.description = (
-                    rule.outcome_change
+                    rule.description
                 )
