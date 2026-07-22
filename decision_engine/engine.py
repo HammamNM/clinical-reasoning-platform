@@ -1,3 +1,4 @@
+from decision_engine.models import DecisionProfile
 from decision_engine.evaluator_manager import EvaluatorManager
 
 
@@ -35,7 +36,7 @@ class DecisionEngine:
         )
 
 
-        return {
-            "action": action,
-            "assessments": assessments
-        }
+        return DecisionProfile(
+    action=action,
+    assessments=assessments
+        )
