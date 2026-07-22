@@ -11,7 +11,7 @@ engine = DecisionEngine()
 
 profile = engine.evaluate_decision(
     session,
-    "ORDER_ECG"
+    "ORDER_UNNECESSARY_CT"
 )
 
 
