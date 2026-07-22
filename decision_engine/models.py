@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -9,3 +9,14 @@ class DecisionAssessment:
     score: int
 
     explanation: str
+
+
+
+@dataclass
+class DecisionProfile:
+
+    action: str
+
+    assessments: list = field(
+        default_factory=list
+    ) 
