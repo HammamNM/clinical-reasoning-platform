@@ -20,6 +20,10 @@ class ClinicalSession:
 
     student_id: str = ""
 
+    active_case: dict = field(
+        default_factory=dict
+    )
+    
     scenario_id: str = ""
 
     state: SimulationState = field(default_factory=SimulationState)
