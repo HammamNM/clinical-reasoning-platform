@@ -1,3 +1,4 @@
+from outcome_engine.mapper import OutcomeMapper
 from decision_engine.engine import DecisionEngine
 from decision_engine.recorder import DecisionRecorder
 
@@ -8,53 +9,72 @@ from simulation.rules import RuleEngine
 
 class SimulationOrchestrator:
 
-    def __init__(
-    self,
-    session
-):
+    def __init__(self, session):
 
-    self.session = session
+        self.session = session
 
-    self.rule_engine = RuleEngine()
+        self.rule_engine = RuleEngine()
 
-    self.timeline_engine = TimelineEngine()
+        self.timeline_engine = TimelineEngine()
+
+        self.decision_engine = DecisionEngine()
+
+        self.decision_recorder = DecisionRecorder(
+            self.decision_engine
+        )
+
+        self.outcome_engine = OutcomeEngine()
+
+        self.outcome_mapper = OutcomeMapper()
 
 
-    self.decision_engine = DecisionEngine()
+    def process_student_action(self, action):
 
-    self.decision_recorder = DecisionRecorder(
-        self.decision_engine
-    )
+        outcome_event = (
+            self.outcome_mapper
+            .map_action(action)
+        )
+
+        if outcome_event:
+
+            self.outcome_engine.process_event(
+                outcome_event.event_type,
+                self.session.outcome
+            )
 
 
-    self.outcome_engine = OutcomeEngine()
-
-    def process_student_action(
-        self,
-        action
-    ):
         self.rule_engine.process_action(
             action,
             self.session.state
         )
-    decision_profile = (
-        self.decision_recorder.record(
-            self.session,
-            action
+
+
+        decision_profile = (
+            self.decision_recorder.record(
+                self.session,
+                action
+            )
         )
-    )
-    self.session.event_stream.add(
-    {
-        "event_type": "DECISION_PROFILE",
-        "content": decision_profile
-    }
-    )
+
+
+        self.session.event_stream.add(
+            {
+                "event_type": "DECISION_PROFILE",
+                "content": decision_profile
+            }
+        )
+
+
         for event in self.rule_engine.events:
+
             self.session.event_stream.add(event)
+
 
         self.rule_engine.events.clear()
 
+
         self.session.clock.advance(1)
+
 
         timeline_events = (
             self.timeline_engine
@@ -63,5 +83,7 @@ class SimulationOrchestrator:
             )
         )
 
+
         for event in timeline_events:
+
             self.session.event_stream.add(event)
