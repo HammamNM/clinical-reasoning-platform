@@ -1,3 +1,4 @@
+from outcome_engine.models import PatientOutcome
 from dataclasses import dataclass, field
 from datetime import datetime
 import uuid
@@ -22,6 +23,12 @@ class ClinicalSession:
 
     clock: SimulationClock = field(default_factory=SimulationClock)
 
-    finished: bool = False
+outcome: PatientOutcome = field(
+    default_factory=lambda: PatientOutcome(
+        status="STABLE",
+        severity=0,
+        description="Initial patient state"
+    )
+)
 
-    current_stage: int = 1
+finished: bool = False
