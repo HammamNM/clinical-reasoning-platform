@@ -3,7 +3,15 @@ class OutcomeMapper:
 
     def __init__(self):
 
-        self.mappings = {}
+        self.mappings = {
+
+            "ORDER_ECG": "ECG_COMPLETED",
+
+            "ORDER_TROPONIN": "TROPONIN_COMPLETED",
+
+            "MAKE_DIAGNOSIS": "DIAGNOSIS_MADE"
+
+        }
 
 
 
@@ -22,4 +30,6 @@ class OutcomeMapper:
         action
     ):
 
-        return self.mappings.get(action)
+        return self.mappings.get(
+            action
+        )
