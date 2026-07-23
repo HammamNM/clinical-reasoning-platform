@@ -28,7 +28,7 @@ def main():
 
     ]
 
-        orchestrator.run_session(
+    orchestrator.run_session(
         actions
     )
 
