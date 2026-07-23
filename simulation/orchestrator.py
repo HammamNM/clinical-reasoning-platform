@@ -100,6 +100,8 @@ class SimulationOrchestrator:
         action
     ):
 
+    print("ACTION RECEIVED:", action)
+        
         self.dispatch_action(
             action
         )
