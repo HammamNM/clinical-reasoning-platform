@@ -16,3 +16,18 @@ class EventBridge:
     def get_events(self):
 
         return self.stream.get_all()
+
+class EventBridge:
+
+
+    def process_events(
+        self,
+        session
+    ):
+
+        events = (
+            session.event_stream.events
+        )
+
+
+        return events
