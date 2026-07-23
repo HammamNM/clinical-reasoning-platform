@@ -151,3 +151,17 @@ class SimulationOrchestrator:
                 "content": action
             }
         )
+
+    def run_session(
+    self,
+    actions
+):
+
+    for action in actions:
+
+        self.process_student_action(
+            action
+        )
+
+
+    return self.session
