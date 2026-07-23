@@ -28,13 +28,27 @@ def main():
 
     ]
 
-    orchestrator.run_session(
+        orchestrator.run_session(
         actions
     )
 
-    print(
-        "Simulation Finished"
-    )
+    print("Simulation Finished")
+
+    print("\nEVENTS:")
+
+    for event in session.event_stream.events:
+        print(event)
+
+
+    print("\nDECISIONS:")
+
+    for decision in session.decision_history:
+        print(decision)
+
+
+    print("\nOUTCOME:")
+
+    print(session.outcome)
 
 
 if __name__ == "__main__":
