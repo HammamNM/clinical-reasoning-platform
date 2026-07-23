@@ -25,6 +25,23 @@
     "troponin": false
   },
 
+  "investigations": {
+  "ORDER_ECG": {
+    "title": "ECG",
+    "result": "ST depression in lateral leads"
+  },
+
+  "ORDER_TROPONIN": {
+    "title": "Troponin",
+    "result": "Positive"
+  },
+
+  "ORDER_LIPASE": {
+    "title": "Lipase",
+    "result": "Normal"
+  }
+},
+  
   "available_actions": [
     "ORDER_ECG",
     "ORDER_TROPONIN",
