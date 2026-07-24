@@ -1,11 +1,21 @@
 from kernel.events import ReasoningEvent
 from kernel.registry import EngineRegistry
+from kernel.session import KernelSession
 
 
 class KernelRuntime:
 
 
-    def __init__(self):
+    def __init__(
+        self,
+        session=None
+    ):
+
+        self.session = (
+            session
+            if session
+            else KernelSession()
+        )
 
         self.registry = EngineRegistry()
 
@@ -45,8 +55,7 @@ class KernelRuntime:
 
 
     def run_cycle(
-        self,
-        session
+        self
     ):
 
         while self.event_queue:
@@ -56,16 +65,21 @@ class KernelRuntime:
             )
 
 
-            new_events = (
+            self.session.event_stream.publish(
+                event
+            )
+
+
+            generated_events = (
                 self.registry.dispatch(
                     event,
-                    session
+                    self.session
                 )
             )
 
 
-            for new_event in new_events:
+            for generated_event in generated_events:
 
                 self.publish(
-                    new_event
+                    generated_event
                 )
