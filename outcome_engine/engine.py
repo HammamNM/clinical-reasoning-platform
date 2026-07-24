@@ -1,4 +1,7 @@
-from outcome_engine.rules import OutcomeRuleEngine
+from outcome_engine.rules import (
+    OutcomeRuleEngine,
+    OutcomeRule
+)
 
 
 class OutcomeEngine:
