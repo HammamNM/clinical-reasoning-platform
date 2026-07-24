@@ -36,10 +36,13 @@ def test_reasoning_flow():
 
 
     event = ReasoningEvent(
-        event_id="E001",
-        event_type="DECISION",
-        content="Student ordered ECG"
-    )
+    event_type="DECISION",
+    payload={
+        "action": "ORDER_ECG",
+        "description": "Student ordered ECG"
+    },
+    source="TEST_KERNEL"
+)
 
 
     print("Nodes:")
