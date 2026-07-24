@@ -1,5 +1,5 @@
 from kernel.runtime import KernelRuntime
-from kernel.session import KernelSession
+from kernel.adapters.session_adapter import ClinicalSessionAdapter
 
 
 from kernel.adapters.decision_adapter import (
@@ -29,18 +29,19 @@ class KernelBootstrap:
 
     def create_runtime(
         self,
-        session=None
+        clinical_session
     ):
 
-        kernel_session = (
-            session
-            if session
-            else KernelSession()
+
+        session_adapter = (
+            ClinicalSessionAdapter(
+                clinical_session
+            )
         )
 
 
         runtime = KernelRuntime(
-            kernel_session
+            session_adapter
         )
 
 
