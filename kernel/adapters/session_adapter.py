@@ -1,7 +1,7 @@
-from kernel.session import KernelSession
+from kernel.events import EventStream
 
 
-class ClinicalSessionAdapter(KernelSession):
+class ClinicalSessionAdapter:
 
 
     def __init__(
@@ -11,45 +11,29 @@ class ClinicalSessionAdapter(KernelSession):
 
         self.clinical_session = clinical_session
 
-
-        super().__init__()
+        self.event_stream = EventStream()
 
 
     @property
-    def active_case(
-        self
-    ):
-
+    def active_case(self):
         return self.clinical_session.active_case
 
 
     @property
-    def outcome(
-        self
-    ):
-
+    def outcome(self):
         return self.clinical_session.outcome
 
 
     @property
-    def decision_history(
-        self
-    ):
-
+    def decision_history(self):
         return self.clinical_session.decision_history
 
 
     @property
-    def state(
-        self
-    ):
-
+    def state(self):
         return self.clinical_session.state
 
 
     @property
-    def clock(
-        self
-    ):
-
+    def clock(self):
         return self.clinical_session.clock
