@@ -1,27 +1,61 @@
+from kernel.events import (
+    ReasoningEvent
+)
+
+
 class InvestigationEngine:
 
 
-    def process_action(
+    def process_event(
         self,
-        action,
-        case_data,
-        event_stream
+        event,
+        session
     ):
 
-        investigations = case_data.get(
-            "investigations",
-            {}
+        if event.event_type != "ACTION":
+
+            return
+
+
+        investigations = (
+            session.active_case.get(
+                "investigations",
+                {}
+            )
         )
 
 
-        if action in investigations:
-
-            result = investigations[action]
-
-
-            event_stream.add(
-                {
-                    "event_type": "INVESTIGATION_RESULT",
-                    "content": result
-                }
+        action = (
+            event.payload.get(
+                "action"
             )
+        )
+
+
+        if action not in investigations:
+
+            return
+
+
+        result = investigations[action]
+
+
+        session.event_stream.publish(
+
+            ReasoningEvent(
+
+                event_type="INVESTIGATION_RESULT",
+
+                payload={
+
+                    "action": action,
+
+                    "result": result
+
+                },
+
+                source="INVESTIGATION_ENGINE"
+
+            )
+
+        )
