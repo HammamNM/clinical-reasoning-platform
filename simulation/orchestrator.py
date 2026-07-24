@@ -1,98 +1,16 @@
-from simulation.actions import (
-    INVESTIGATION_ACTIONS,
-    THERAPEUTIC_ACTIONS,
-    DIAGNOSTIC_ACTIONS,
-    HISTORY_ACTIONS
-)
-
-from simulation.investigation_engine import InvestigationEngine
-from simulation.timeline import TimelineEngine
-from simulation.rules import RuleEngine
-
-from backend.case_loader import CaseLoader
-
-from decision_engine.engine import DecisionEngine
-from decision_engine.recorder import DecisionRecorder
-
-from outcome_engine.engine import OutcomeEngine
-from outcome_engine.mapper import OutcomeMapper
+from kernel.events import ReasoningEvent
 
 
 class SimulationOrchestrator:
 
+
     def __init__(
         self,
-        session
+        runtime
     ):
 
-        self.session = session
+        self.runtime = runtime
 
-        self.case_loader = CaseLoader()
-
-        self.investigation_engine = InvestigationEngine()
-
-        self.rule_engine = RuleEngine()
-
-        self.timeline_engine = TimelineEngine()
-
-        self.decision_engine = DecisionEngine()
-
-        self.decision_recorder = DecisionRecorder(
-            self.decision_engine
-        )
-
-        self.outcome_engine = OutcomeEngine()
-
-        self.outcome_mapper = OutcomeMapper()
-
-
-    def load_case(
-        self,
-        filepath
-    ):
-
-        self.session.active_case = (
-            self.case_loader.load_case(
-                filepath
-            )
-        )
-
-
-    def dispatch_action(
-        self,
-        action
-    ):
-
-        if action in INVESTIGATION_ACTIONS:
-
-            self.investigation_engine.process_action(
-                action,
-                self.session.active_case,
-                self.session.event_stream
-            )
-
-        elif action in THERAPEUTIC_ACTIONS:
-
-            self.rule_engine.process_action(
-                action,
-                self.session.state
-            )
-
-        elif action in DIAGNOSTIC_ACTIONS:
-
-            self.rule_engine.process_action(
-                action,
-                self.session.state
-            )
-
-        elif action in HISTORY_ACTIONS:
-
-            self.session.event_stream.add(
-                {
-                    "event_type": "HISTORY_RESPONSE_REQUEST",
-                    "content": action
-                }
-            )
 
 
     def process_student_action(
@@ -100,58 +18,27 @@ class SimulationOrchestrator:
         action
     ):
 
-        print(
-            "ACTION RECEIVED:",
-            action
-        )
+        event = ReasoningEvent(
 
-        self.dispatch_action(
-            action
-        )
+            event_type="ACTION",
 
+            payload={
 
-        outcome_event = (
-            self.outcome_mapper.map_action(
-                action
-            )
-        )
+                "action": action
 
+            },
 
-        if outcome_event:
+            source="STUDENT"
 
-            self.outcome_engine.process_event(
-                outcome_event.event_type,
-                self.session.outcome
-            )
-
-
-        decision_profile = (
-            self.decision_recorder.record(
-                self.session,
-                action
-            )
         )
 
 
-        self.session.event_stream.add(
-            {
-                "event_type": "DECISION_PROFILE",
-                "content": decision_profile
-            }
+        self.runtime.publish(
+            event
         )
 
 
-        for event in self.rule_engine.events:
-
-            self.session.event_stream.add(
-                event
-            )
-
-
-        self.rule_engine.events.clear()
-
-
-        self.session.clock.advance(1)
+        self.runtime.run_cycle()
 
 
 
@@ -167,4 +54,4 @@ class SimulationOrchestrator:
             )
 
 
-        return self.session
+        return self.runtime.session
