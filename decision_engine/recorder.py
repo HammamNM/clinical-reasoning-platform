@@ -1,3 +1,8 @@
+from kernel.events import (
+    ReasoningEvent
+)
+
+
 class DecisionRecorder:
 
 
@@ -27,11 +32,26 @@ class DecisionRecorder:
             profile
         )
 
-        session.event_stream.add(
-            {
-                "event_type": "DECISION_ASSESSMENT",
-                "content": profile
-            }
+
+        session.event_stream.publish(
+
+            ReasoningEvent(
+
+                event_type="DECISION_ASSESSMENT",
+
+                payload={
+
+                    "action": action,
+
+                    "profile": profile
+
+                },
+
+                source="DECISION_ENGINE"
+
+            )
+
         )
+
 
         return profile
