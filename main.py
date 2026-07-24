@@ -1,5 +1,6 @@
 from backend.session_manager import SessionManager
 from simulation.orchestrator import SimulationOrchestrator
+from kernel.bootstrap import KernelBootstrap
 
 
 def main():
@@ -12,8 +13,13 @@ def main():
         case_path="scenarios/nstemi_case.json"
     )
 
+    runtime = KernelBootstrap().create_runtime(
+    session
+    )
+
+
     orchestrator = SimulationOrchestrator(
-        session
+    runtime
     )
 
     actions = [
