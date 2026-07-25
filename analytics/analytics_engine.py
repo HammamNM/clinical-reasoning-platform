@@ -91,11 +91,28 @@ class AnalyticsEngine:
             )
 
 
+                cognitive_data = {
+
+            "patterns":
+                cognitive_patterns,
+
+            "metrics":
+                cognitive_metrics
+
+        }
+
+
         report = (
             self.report_generator.generate(
+
                 session,
+
                 performance_data,
-                patterns
+
+                patterns,
+
+                cognitive_data
+
             )
         )
 
@@ -110,12 +127,7 @@ class AnalyticsEngine:
 
         }
 
-        report["cognitive"] = {
-
-        "patterns": cognitive_patterns,
-
-        "metrics": cognitive_metrics
-
-        }
+        
+       
         
         return report
