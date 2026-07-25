@@ -1,7 +1,7 @@
 from analytics.pattern_detector import PatternDetector
 from analytics.performance_analyzer import PerformanceAnalyzer
+from analytics.reasoning_analyzer import ReasoningAnalyzer
 from analytics.report import ReportGenerator
-
 
 
 class AnalyticsEngine:
@@ -11,10 +11,17 @@ class AnalyticsEngine:
 
         self.pattern_detector = PatternDetector()
 
-        self.performance_analyzer = PerformanceAnalyzer()
+        self.performance_analyzer = (
+            PerformanceAnalyzer()
+        )
 
-        self.report_generator = ReportGenerator()
+        self.reasoning_analyzer = (
+            ReasoningAnalyzer()
+        )
 
+        self.report_generator = (
+            ReportGenerator()
+        )
 
 
     def generate_report(
@@ -23,7 +30,6 @@ class AnalyticsEngine:
         event_bridge,
         reasoning_graph=None
     ):
-
 
         patterns = (
             self.pattern_detector.analyze(
@@ -39,6 +45,26 @@ class AnalyticsEngine:
         )
 
 
+        reasoning_data = {}
+
+        reasoning_path = []
+
+
+        if reasoning_graph is not None:
+
+            reasoning_data = (
+                self.reasoning_analyzer.analyze_graph(
+                    reasoning_graph
+                )
+            )
+
+            reasoning_path = (
+                self.reasoning_analyzer.extract_reasoning_path(
+                    reasoning_graph
+                )
+            )
+
+
         report = (
             self.report_generator.generate(
                 session,
@@ -46,6 +72,17 @@ class AnalyticsEngine:
                 patterns
             )
         )
+
+
+        report["reasoning"] = {
+
+            "metrics":
+                reasoning_data,
+
+            "path":
+                reasoning_path
+
+        }
 
 
         return report
