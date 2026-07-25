@@ -5,8 +5,19 @@ class ReportGenerator:
         self,
         session,
         performance_data,
-        patterns
+        patterns,
+        cognitive_data=None
     ):
+
+        cognitive_data = (
+            cognitive_data
+            if cognitive_data is not None
+            else {
+                "patterns": [],
+                "metrics": []
+            }
+        )
+
 
         return {
 
@@ -40,6 +51,10 @@ class ReportGenerator:
 
             "patterns":
                 patterns,
+
+
+            "cognitive":
+                cognitive_data,
 
 
             "outcome": {
