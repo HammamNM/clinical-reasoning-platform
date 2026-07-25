@@ -110,5 +110,12 @@ class AnalyticsEngine:
 
         }
 
+        report["cognitive"] = {
 
+        "patterns": cognitive_patterns,
+
+        "metrics": cognitive_metrics
+
+        }
+        
         return report
