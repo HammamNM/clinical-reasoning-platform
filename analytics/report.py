@@ -30,7 +30,15 @@ class ReportGenerator:
                 patterns,
 
             "outcome":
-                session.outcome
+        {
+            "status": session.outcome.status,
+
+            "severity":
+                session.outcome.severity,
+
+            "description":
+                session.outcome.description
+        }
 
         }
 
