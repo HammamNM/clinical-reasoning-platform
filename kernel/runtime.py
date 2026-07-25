@@ -1,3 +1,4 @@
+from analytics.event_bridge import EventBridge
 from kernel.events import ReasoningEvent
 from kernel.registry import EngineRegistry
 from kernel.session import KernelSession
@@ -20,9 +21,10 @@ class KernelRuntime:
         self.registry = EngineRegistry()
 
         self.event_queue = []
+        self.event_bridge = EventBridge()
 
 
-
+    
     def register_engine(
         self,
         engine
@@ -66,6 +68,11 @@ class KernelRuntime:
 
 
             self.session.event_stream.publish(
+                event
+            )
+
+
+            self.event_bridge.collect(
                 event
             )
 
