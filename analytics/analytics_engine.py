@@ -2,6 +2,14 @@ from analytics.pattern_detector import PatternDetector
 from analytics.performance_analyzer import PerformanceAnalyzer
 from analytics.reasoning_analyzer import ReasoningAnalyzer
 from analytics.report import ReportGenerator
+from analytics.cognitive_patterns import (
+    CognitivePatternExtractor
+)
+
+from analytics.cognitive_metrics import (
+    CognitiveMetricEngine
+)
+
 
 
 class AnalyticsEngine:
@@ -9,6 +17,14 @@ class AnalyticsEngine:
 
     def __init__(self):
 
+        self.pattern_extractor = (
+            CognitivePatternExtractor()
+        )
+
+        self.metric_engine = (
+            CognitiveMetricEngine()
+        )
+        
         self.pattern_detector = PatternDetector()
 
         self.performance_analyzer = (
@@ -37,7 +53,17 @@ class AnalyticsEngine:
             )
         )
 
+        cognitive_patterns = (
+        self.pattern_extractor.extract(
+            event_bridge
+        )
+    )
 
+        cognitive_metrics = (
+        self.metric_engine.evaluate(
+        cognitive_patterns
+        )
+    )
         performance_data = (
             self.performance_analyzer.analyze(
                 session
