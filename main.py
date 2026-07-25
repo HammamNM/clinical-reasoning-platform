@@ -1,3 +1,4 @@
+from analytics.pattern_detector import PatternDetector
 from backend.session_manager import SessionManager
 from simulation.orchestrator import SimulationOrchestrator
 from kernel.bootstrap import KernelBootstrap
@@ -55,8 +56,17 @@ def main():
     print("\nOUTCOME:")
 
     print(session.outcome)
+    print("\nPATTERNS:")
 
+    detector = PatternDetector()
+
+    patterns = detector.analyze(
+    runtime.event_bridge 
+    )
+
+    print(patterns)
 
 if __name__ == "__main__":
 
     main()
+    
