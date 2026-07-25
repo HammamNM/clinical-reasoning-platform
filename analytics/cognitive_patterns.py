@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from analytics.pattern_registry import PatternRegistry
+
 from analytics.cognitive_pattern_rules import (
     CognitivePatternRuleEngine
 )
@@ -42,7 +43,7 @@ class CognitivePatternExtractor:
         )
 
 
-        detected_ids = (
+        detections = (
             self.rule_engine.evaluate(
                 events
             )
@@ -52,7 +53,12 @@ class CognitivePatternExtractor:
         patterns = []
 
 
-        for pattern_id in detected_ids:
+        for detection in detections:
+
+            pattern_id = (
+                detection["pattern_id"]
+            )
+
 
             definition = (
                 self.registry.get(
@@ -76,7 +82,9 @@ class CognitivePatternExtractor:
                         definition.description
                     ),
 
-                    evidence=[],
+                    evidence=(
+                        detection["evidence"]
+                    ),
 
                     pattern_id=(
                         definition.pattern_id
