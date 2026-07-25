@@ -1,5 +1,9 @@
 from dataclasses import dataclass
 
+from analytics.cognitive_metric_rules import (
+    CognitiveMetricRuleEngine
+)
+
 
 @dataclass
 class CognitiveMetric:
@@ -14,41 +18,102 @@ class CognitiveMetric:
 class CognitiveMetricEngine:
 
 
+    def __init__(self):
+
+        self.rule_engine = (
+            CognitiveMetricRuleEngine()
+        )
+
+
     def evaluate(
         self,
         patterns
     ):
 
+        adjustments = (
+            self.rule_engine.evaluate(
+                patterns
+            )
+        )
+
+
         metrics = []
 
 
-        information_score = 100.0
+        for name, adjustment in (
+            adjustments.items()
+        ):
+
+            score = 100.0 + adjustment
 
 
-        for pattern in patterns:
+            score = max(
+                0.0,
+                min(
+                    100.0,
+                    score
+                )
+            )
 
-            if pattern.name == "INVESTIGATION_BEFORE_HISTORY":
 
-                information_score -= 25
+            explanation = (
+                self.build_explanation(
+                    name,
+                    score,
+                    patterns
+                )
+            )
 
 
-        metrics.append(
+            metrics.append(
 
-            CognitiveMetric(
+                CognitiveMetric(
 
-                name="INFORMATION_GATHERING",
+                    name=name,
 
-                score=information_score,
+                    score=score,
 
-                explanation=(
-
-                    "Measures whether the student gathered sufficient information before acting."
+                    explanation=explanation
 
                 )
 
             )
 
-        )
-
 
         return metrics
+
+
+    def build_explanation(
+        self,
+        name,
+        score,
+        patterns
+    ):
+
+        if score >= 90:
+
+            return (
+                f"{name} is strong."
+            )
+
+
+        if score >= 75:
+
+            return (
+                f"{name} is acceptable "
+                f"but has room for improvement."
+            )
+
+
+        if score >= 50:
+
+            return (
+                f"{name} shows a meaningful "
+                f"area for improvement."
+            )
+
+
+        return (
+            f"{name} shows a significant "
+            f"weakness."
+        )
