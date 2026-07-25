@@ -19,6 +19,54 @@ class ReportGenerator:
         )
 
 
+        cognitive_patterns = []
+
+        for pattern in cognitive_data.get(
+            "patterns",
+            []
+        ):
+
+            cognitive_patterns.append({
+
+                "pattern_id":
+                    pattern.pattern_id,
+
+                "name":
+                    pattern.name,
+
+                "category":
+                    pattern.category,
+
+                "description":
+                    pattern.description,
+
+                "evidence":
+                    pattern.evidence
+
+            })
+
+
+        cognitive_metrics = []
+
+        for metric in cognitive_data.get(
+            "metrics",
+            []
+        ):
+
+            cognitive_metrics.append({
+
+                "name":
+                    metric.name,
+
+                "score":
+                    metric.score,
+
+                "explanation":
+                    metric.explanation
+
+            })
+
+
         return {
 
             "session_id":
@@ -53,8 +101,15 @@ class ReportGenerator:
                 patterns,
 
 
-            "cognitive":
-                cognitive_data,
+            "cognitive": {
+
+                "patterns":
+                    cognitive_patterns,
+
+                "metrics":
+                    cognitive_metrics
+
+            },
 
 
             "outcome": {
