@@ -12,7 +12,6 @@ class InvestigationEngineAdapter:
         self.investigation_engine = investigation_engine
 
 
-
     def process_event(
         self,
         event,
@@ -24,51 +23,25 @@ class InvestigationEngineAdapter:
             return None
 
 
-        action = (
-            event.payload.get(
-                "action"
-            )
-        )
-
-
-        before_count = len(
+        before = len(
             session.event_stream.get_all()
         )
 
 
-        self.investigation_engine.process_action(
-            action,
-            session.active_case,
-            session.event_stream
+        self.investigation_engine.process_event(
+            event,
+            session
         )
 
 
-        after_events = (
-            session.event_stream.get_all()
-            [before_count:]
+        after = (
+            session.event_stream.get_all()[before:]
         )
 
 
-        if not after_events:
+        if not after:
 
             return None
 
 
-        old_event = after_events[0]
-
-
-        return ReasoningEvent(
-
-            event_type="INVESTIGATION_RESULT",
-
-            payload={
-
-                "action": action,
-
-                "result": old_event
-
-            },
-
-            source="INVESTIGATION_ADAPTER"
-
-        )
+        return after
