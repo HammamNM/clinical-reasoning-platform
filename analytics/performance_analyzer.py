@@ -113,3 +113,26 @@ class PerformanceAnalyzer:
 
 
         return "STABLE"
+    def analyze(
+        self,
+        session
+    ):
+
+        return {
+
+            "average_score":
+                self.calculate_average_score(
+                    session
+                ),
+
+            "dimensions":
+                self.calculate_dimension_scores(
+                    session
+                ),
+
+            "trend":
+                self.calculate_progress_trend(
+                    session
+                )
+
+        }
