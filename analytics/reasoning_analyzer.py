@@ -1,7 +1,7 @@
 class ReasoningAnalyzer:
 
 
-    def extract_reasoning_metrics(
+    def analyze_graph(
         self,
         reasoning_graph
     ):
@@ -20,3 +20,30 @@ class ReasoningAnalyzer:
 
 
         return metrics
+
+
+
+    def extract_reasoning_path(
+        self,
+        reasoning_graph
+    ):
+
+        path = []
+
+
+        for node in reasoning_graph.nodes:
+
+            path.append(
+                {
+                    "id": node.id,
+
+                    "primitive":
+                        node.primitive.value,
+
+                    "content":
+                        node.content
+                }
+            )
+
+
+        return path
