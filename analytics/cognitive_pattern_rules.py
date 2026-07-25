@@ -1,5 +1,9 @@
 from analytics.evidence import EvidenceExtractor
 
+from analytics.evidence_relations import (
+    EvidenceRelationExtractor
+)
+
 
 class CognitivePatternRuleEngine:
 
@@ -8,6 +12,10 @@ class CognitivePatternRuleEngine:
 
         self.evidence_extractor = (
             EvidenceExtractor()
+        )
+
+        self.relation_extractor = (
+            EvidenceRelationExtractor()
         )
 
 
@@ -61,7 +69,9 @@ class CognitivePatternRuleEngine:
         events
     ):
 
-        history_seen = False
+        first_history_index = None
+
+        first_history_event = None
 
         evidence = []
 
@@ -72,8 +82,19 @@ class CognitivePatternRuleEngine:
                 "HISTORY_RESPONSE_REQUEST"
             ):
 
-                history_seen = True
+                first_history_index = index
 
+                first_history_event = event
+
+                break
+
+
+        if first_history_index is None:
+
+            return []
+
+
+        for index, event in enumerate(events):
 
             if (
 
@@ -83,11 +104,11 @@ class CognitivePatternRuleEngine:
 
                 and
 
-                not history_seen
+                index < first_history_index
 
             ):
 
-                record = (
+                event_record = (
                     self.evidence_extractor.extract(
                         event,
                         index
@@ -95,11 +116,29 @@ class CognitivePatternRuleEngine:
                 )
 
 
-                evidence.append(
-                    self.evidence_extractor.to_dict(
-                        record
+                relation = (
+                    self.relation_extractor.before(
+                        event,
+                        index,
+                        first_history_event,
+                        first_history_index
                     )
                 )
+
+
+                evidence.append({
+
+                    "event":
+                        self.evidence_extractor.to_dict(
+                            event_record
+                        ),
+
+                    "relation":
+                        self.relation_extractor.to_dict(
+                            relation
+                        )
+
+                })
 
 
         return evidence
