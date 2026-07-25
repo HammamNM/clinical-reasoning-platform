@@ -1,12 +1,15 @@
-from analytics.pattern_detector import PatternDetector
 from backend.session_manager import SessionManager
 from simulation.orchestrator import SimulationOrchestrator
-from kernel.bootstrap import KernelBootstrap
+
+from kernel.runtime import KernelRuntime
+
+from analytics.analytics_engine import AnalyticsEngine
 
 
 def main():
 
     session_manager = SessionManager()
+
 
     session = session_manager.create_session(
         student_id="student_001",
@@ -14,14 +17,16 @@ def main():
         case_path="scenarios/nstemi_case.json"
     )
 
-    runtime = KernelBootstrap().create_runtime(
-    session
+
+    runtime = KernelRuntime(
+        session
     )
 
 
     orchestrator = SimulationOrchestrator(
-    runtime
+        runtime
     )
+
 
     actions = [
 
@@ -35,38 +40,117 @@ def main():
 
     ]
 
+
     orchestrator.run_session(
         actions
     )
 
-    print("Simulation Finished")
 
-    print("\nEVENTS:")
-
-    for event in session.event_stream.events:
-        print(event)
+    analytics = AnalyticsEngine()
 
 
-    print("\nDECISIONS:")
+    report = analytics.generate_report(
 
-    for decision in session.decision_history:
-        print(decision)
+        session=session,
 
+        event_bridge=(
+            runtime.event_bridge
+        ),
 
-    print("\nOUTCOME:")
+        reasoning_graph=(
+            runtime
+            .reasoning_builder
+            .graph
+        )
 
-    print(session.outcome)
-    print("\nPATTERNS:")
-
-    detector = PatternDetector()
-
-    patterns = detector.analyze(
-    runtime.event_bridge 
     )
 
-    print(patterns)
+
+    print(
+        "\n=============================="
+    )
+
+    print(
+        "CLINICAL REASONING REPORT"
+    )
+
+    print(
+        "=============================="
+    )
+
+
+    print(
+        "\nSESSION:"
+    )
+
+    print(
+        report["session_id"]
+    )
+
+
+    print(
+        "\nSCENARIO:"
+    )
+
+    print(
+        report["scenario_id"]
+    )
+
+
+    print(
+        "\nPERFORMANCE:"
+    )
+
+    print(
+        report["average_score"]
+    )
+
+
+    print(
+        "\nDIMENSIONS:"
+    )
+
+    print(
+        report["dimension_scores"]
+    )
+
+
+    print(
+        "\nPROGRESS:"
+    )
+
+    print(
+        report["progress_trend"]
+    )
+
+
+    print(
+        "\nPATTERNS:"
+    )
+
+    print(
+        report["patterns"]
+    )
+
+
+    print(
+        "\nREASONING:"
+    )
+
+    print(
+        report["reasoning"]
+    )
+
+
+    print(
+        "\nOUTCOME:"
+    )
+
+    print(
+        report["outcome"]
+    )
+
 
 if __name__ == "__main__":
 
     main()
-    
