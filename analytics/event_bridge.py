@@ -1,33 +1,40 @@
-from kernel.events import EventStream
-
-
 class EventBridge:
+
 
     def __init__(self):
 
-        self.stream = EventStream()
+        self.events = []
 
 
     def collect(
         self,
+        event
+    ):
+
+        self.events.append(
+            event
+        )
+
+
+    def collect_many(
+        self,
         events
     ):
 
-        for event in events:
-
-            self.stream.add(event)
+        self.events.extend(
+            events
+        )
 
 
     def get_events(
         self
     ):
 
-        return self.stream.get_all()
+        return self.events
 
 
-    def process_events(
-        self,
-        session
+    def clear(
+        self
     ):
 
-        return session.event_stream.events
+        self.events.clear()
