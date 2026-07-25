@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 
 from analytics.pattern_registry import PatternRegistry
+from analytics.cognitive_pattern_rules import (
+    CognitivePatternRuleEngine
+)
 
 
 @dataclass
@@ -24,69 +27,68 @@ class CognitivePatternExtractor:
 
         self.registry = PatternRegistry()
 
+        self.rule_engine = (
+            CognitivePatternRuleEngine()
+        )
+
 
     def extract(
         self,
         event_bridge
     ):
 
-        events = event_bridge.get_events()
+        events = (
+            event_bridge.get_events()
+        )
+
+
+        detected_ids = (
+            self.rule_engine.evaluate(
+                events
+            )
+        )
+
 
         patterns = []
 
-        history_requested = False
 
-        investigation_before_history = False
+        for pattern_id in detected_ids:
 
-
-        for event in events:
-
-            if event.event_type == "HISTORY_RESPONSE_REQUEST":
-
-                history_requested = True
-
-
-            if (
-
-                event.event_type == "INVESTIGATION_RESULT"
-
-                and
-
-                not history_requested
-
-            ):
-
-                investigation_before_history = True
-
-
-        if investigation_before_history:
-
-            definition = self.registry.get(
-                "CP-001"
+            definition = (
+                self.registry.get(
+                    pattern_id
+                )
             )
 
 
-            if definition:
+            if definition is None:
 
-                patterns.append(
+                continue
 
-                    CognitivePattern(
 
-                        name=definition.name,
+            patterns.append(
 
-                        description=definition.description,
+                CognitivePattern(
 
-                        evidence=[
-                            "INVESTIGATION_RESULT"
-                        ],
+                    name=definition.name,
 
-                        pattern_id=definition.pattern_id,
+                    description=(
+                        definition.description
+                    ),
 
-                        category=definition.category
+                    evidence=[],
 
+                    pattern_id=(
+                        definition.pattern_id
+                    ),
+
+                    category=(
+                        definition.category
                     )
 
                 )
+
+            )
 
 
         return patterns
