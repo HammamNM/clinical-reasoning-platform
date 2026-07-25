@@ -3,14 +3,12 @@ from kernel.events import ReasoningEvent
 
 class SimulationOrchestrator:
 
-
     def __init__(
         self,
         runtime
     ):
 
         self.runtime = runtime
-
 
 
     def process_student_action(
@@ -23,23 +21,18 @@ class SimulationOrchestrator:
             event_type="ACTION",
 
             payload={
-
                 "action": action
-
             },
 
             source="STUDENT"
 
         )
 
-
         self.runtime.publish(
             event
         )
 
-
         self.runtime.run_cycle()
-
 
 
     def run_session(
@@ -52,6 +45,5 @@ class SimulationOrchestrator:
             self.process_student_action(
                 action
             )
-
 
         return self.runtime.session
