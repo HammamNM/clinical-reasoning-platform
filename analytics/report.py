@@ -8,11 +8,14 @@ class ReportGenerator:
         patterns
     ):
 
-        report = {
+        return {
 
-            "session_id": session.session_id,
+            "session_id":
+                session.session_id,
 
-            "scenario_id": session.scenario_id,
+            "scenario_id":
+                session.scenario_id,
+
 
             "average_score":
                 performance_data.get(
@@ -20,27 +23,36 @@ class ReportGenerator:
                     0
                 ),
 
+
             "dimension_scores":
                 performance_data.get(
                     "dimensions",
                     {}
                 ),
 
+
+            "progress_trend":
+                performance_data.get(
+                    "trend",
+                    "INSUFFICIENT_DATA"
+                ),
+
+
             "patterns":
                 patterns,
 
-            "outcome":
-        {
-            "status": session.outcome.status,
 
-            "severity":
-                session.outcome.severity,
+            "outcome": {
 
-            "description":
-                session.outcome.description
+                "status":
+                    session.outcome.status,
+
+                "severity":
+                    session.outcome.severity,
+
+                "description":
+                    session.outcome.description
+
+            }
+
         }
-
-        }
-
-
-        return report
