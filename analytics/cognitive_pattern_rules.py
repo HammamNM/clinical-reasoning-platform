@@ -1,4 +1,14 @@
+from analytics.evidence import EvidenceExtractor
+
+
 class CognitivePatternRuleEngine:
+
+
+    def __init__(self):
+
+        self.evidence_extractor = (
+            EvidenceExtractor()
+        )
 
 
     def evaluate(
@@ -56,7 +66,7 @@ class CognitivePatternRuleEngine:
         evidence = []
 
 
-        for event in events:
+        for index, event in enumerate(events):
 
             if event.event_type == (
                 "HISTORY_RESPONSE_REQUEST"
@@ -77,15 +87,19 @@ class CognitivePatternRuleEngine:
 
             ):
 
-                evidence.append({
+                record = (
+                    self.evidence_extractor.extract(
+                        event,
+                        index
+                    )
+                )
 
-                    "event_type":
-                        event.event_type,
 
-                    "payload":
-                        event.payload
-
-                })
+                evidence.append(
+                    self.evidence_extractor.to_dict(
+                        record
+                    )
+                )
 
 
         return evidence
@@ -101,7 +115,7 @@ class CognitivePatternRuleEngine:
         evidence = []
 
 
-        for event in events:
+        for index, event in enumerate(events):
 
             if event.event_type == (
                 "INVESTIGATION_RESULT"
@@ -116,15 +130,19 @@ class CognitivePatternRuleEngine:
 
                 if not investigation_seen:
 
-                    evidence.append({
+                    record = (
+                        self.evidence_extractor.extract(
+                            event,
+                            index
+                        )
+                    )
 
-                        "event_type":
-                            event.event_type,
 
-                        "payload":
-                            event.payload
-
-                    })
+                    evidence.append(
+                        self.evidence_extractor.to_dict(
+                            record
+                        )
+                    )
 
 
         return evidence
