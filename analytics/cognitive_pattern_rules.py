@@ -9,22 +9,38 @@ class CognitivePatternRuleEngine:
         detected = []
 
 
-        if self.investigation_before_history(
-            events
-        ):
-
-            detected.append(
-                "CP-001"
+        evidence = (
+            self.investigation_before_history(
+                events
             )
+        )
+
+        if evidence:
+
+            detected.append({
+
+                "pattern_id": "CP-001",
+
+                "evidence": evidence
+
+            })
 
 
-        if self.premature_closure(
-            events
-        ):
-
-            detected.append(
-                "CP-101"
+        evidence = (
+            self.premature_closure(
+                events
             )
+        )
+
+        if evidence:
+
+            detected.append({
+
+                "pattern_id": "CP-101",
+
+                "evidence": evidence
+
+            })
 
 
         return detected
@@ -36,6 +52,8 @@ class CognitivePatternRuleEngine:
     ):
 
         history_seen = False
+
+        evidence = []
 
 
         for event in events:
@@ -59,10 +77,18 @@ class CognitivePatternRuleEngine:
 
             ):
 
-                return True
+                evidence.append({
+
+                    "event_type":
+                        event.event_type,
+
+                    "payload":
+                        event.payload
+
+                })
 
 
-        return False
+        return evidence
 
 
     def premature_closure(
@@ -70,9 +96,9 @@ class CognitivePatternRuleEngine:
         events
     ):
 
-        diagnosis_seen = False
-
         investigation_seen = False
+
+        evidence = []
 
 
         for event in events:
@@ -88,12 +114,17 @@ class CognitivePatternRuleEngine:
                 "DECISION_ASSESSMENT"
             ):
 
-                diagnosis_seen = True
-
-
                 if not investigation_seen:
 
-                    return True
+                    evidence.append({
+
+                        "event_type":
+                            event.event_type,
+
+                        "payload":
+                            event.payload
+
+                    })
 
 
-        return False
+        return evidence
