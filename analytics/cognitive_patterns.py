@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from analytics.pattern_registry import PatternRegistry
+
 
 @dataclass
 class CognitivePattern:
@@ -10,8 +12,17 @@ class CognitivePattern:
 
     evidence: list
 
+    pattern_id: str
+
+    category: str
+
 
 class CognitivePatternExtractor:
+
+
+    def __init__(self):
+
+        self.registry = PatternRegistry()
 
 
     def extract(
@@ -22,7 +33,6 @@ class CognitivePatternExtractor:
         events = event_bridge.get_events()
 
         patterns = []
-
 
         history_requested = False
 
@@ -51,23 +61,32 @@ class CognitivePatternExtractor:
 
         if investigation_before_history:
 
-            patterns.append(
+            definition = self.registry.get(
+                "CP-001"
+            )
 
-                CognitivePattern(
 
-                    name="INVESTIGATION_BEFORE_HISTORY",
+            if definition:
 
-                    description=(
-                        "Student requested investigations before collecting history."
-                    ),
+                patterns.append(
 
-                    evidence=[
-                        "INVESTIGATION_RESULT"
-                    ]
+                    CognitivePattern(
+
+                        name=definition.name,
+
+                        description=definition.description,
+
+                        evidence=[
+                            "INVESTIGATION_RESULT"
+                        ],
+
+                        pattern_id=definition.pattern_id,
+
+                        category=definition.category
+
+                    )
 
                 )
-
-            )
 
 
         return patterns
