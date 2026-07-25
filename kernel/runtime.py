@@ -2,7 +2,7 @@ from analytics.event_bridge import EventBridge
 from kernel.events import ReasoningEvent
 from kernel.registry import EngineRegistry
 from kernel.session import KernelSession
-
+from kernel.reasoning_graph_builder import ReasoningGraphBuilder
 
 class KernelRuntime:
 
@@ -22,7 +22,7 @@ class KernelRuntime:
 
         self.event_queue = []
         self.event_bridge = EventBridge()
-
+        self.reasoning_builder = ReasoningGraphBuilder()
 
     
     def register_engine(
@@ -76,7 +76,9 @@ class KernelRuntime:
                 event
             )
 
-
+            self.reasoning_builder.process_event(
+                event
+            )
             generated_events = (
                 self.registry.dispatch(
                     event,
