@@ -1,3 +1,6 @@
+from kernel.reasoning_graph_builder import (
+    ReasoningGraphBuilder
+)
 from analytics.event_bridge import EventBridge
 from kernel.events import ReasoningEvent
 from kernel.registry import EngineRegistry
@@ -24,6 +27,9 @@ class KernelRuntime:
         self.registry = EngineRegistry()
 
         self.event_queue = []
+        self.graph_builder = (
+        ReasoningGraphBuilder()
+        )
         self.event_bridge = EventBridge()
         self.reasoning_builder = ReasoningGraphBuilder()
 
@@ -40,7 +46,7 @@ class KernelRuntime:
             engine
         )
 
-
+        
 
     def publish(
         self,
@@ -77,6 +83,10 @@ class KernelRuntime:
                 event
             )
 
+            self.graph_builder.process_event(
+                event
+            )
+            
             self.reasoning_updater.update(
 
             self.session.reasoning_state,
