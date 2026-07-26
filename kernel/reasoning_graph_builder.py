@@ -136,3 +136,44 @@ class ReasoningGraphBuilder:
             current_id
 
         )
+
+    def connect_support(
+
+        self,
+
+        evidence_node_id,
+
+        hypothesis_node_id
+
+    ):
+
+        self.graph.add_edge(
+
+            evidence_node_id,
+
+            hypothesis_node_id,
+
+            relation="SUPPORTS"
+
+        )
+
+
+    def connect_contradiction(
+
+        self,
+
+        evidence_node_id,
+
+        hypothesis_node_id
+
+    ):
+
+        self.graph.add_edge(
+
+            evidence_node_id,
+
+            hypothesis_node_id,
+
+            relation="CONTRADICTS"
+
+        )
