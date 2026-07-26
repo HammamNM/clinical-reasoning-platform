@@ -3,6 +3,9 @@ from kernel.events import ReasoningEvent
 from kernel.registry import EngineRegistry
 from kernel.session import KernelSession
 from kernel.reasoning_graph_builder import ReasoningGraphBuilder
+from kernel.reasoning_state_updater import (
+    ReasoningStateUpdater
+)
 
 class KernelRuntime:
 
@@ -24,7 +27,10 @@ class KernelRuntime:
         self.event_bridge = EventBridge()
         self.reasoning_builder = ReasoningGraphBuilder()
 
-    
+        self.reasoning_updater = (
+        ReasoningStateUpdater()
+        )
+        
     def register_engine(
         self,
         engine
@@ -71,7 +77,14 @@ class KernelRuntime:
                 event
             )
 
+            self.reasoning_updater.update(
 
+            self.session.reasoning_state,
+
+            event
+
+            )
+            
             self.event_bridge.collect(
                 event
             )
