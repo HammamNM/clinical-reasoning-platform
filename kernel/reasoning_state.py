@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field
-
+from kernel.reasoning_transition import (
+    TransitionRecorder
+)
 
 @dataclass
 class ReasoningState:
@@ -26,4 +28,8 @@ class ReasoningState:
 
     performed_treatments: list = field(
         default_factory=list
+    )
+
+    transitions: TransitionRecorder = field(
+    default_factory=TransitionRecorder
     )
