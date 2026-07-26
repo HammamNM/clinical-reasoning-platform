@@ -1,3 +1,10 @@
+from kernel.graph_storage import (
+    GraphStorage
+)
+
+from analytics.analytics_engine import (
+    AnalyticsEngine
+)
 from backend.session_manager import SessionManager
 from simulation.orchestrator import SimulationOrchestrator
 
@@ -46,8 +53,27 @@ def main():
     )
 
 
+    graph_storage = GraphStorage()
+
+    graph_storage.save(
+
+        orchestrator.kernel_runtime
+        .graph_builder
+        .graph,
+
+        "reasoning_graph.json"
+
+    )
+    
+    
     analytics = AnalyticsEngine()
 
+    report = analytics.analyze(
+    session
+    )
+
+    print("\nREPORT")
+    print(report)
 
     report = analytics.generate_report(
 
