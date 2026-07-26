@@ -47,13 +47,26 @@ class ReasoningStateUpdater:
             "DIAGNOSIS_"
         ):
 
-            reasoning_state.active_hypotheses.append(
-                action
-            )
+            from kernel.hypothesis import Hypothesis
+               reasoning_state.active_hypotheses.append(
+
+            Hypothesis(
+
+            name=action,
+
+            confidence=0.50,
+
+            created_by=action
+
+        )
+
+                  ) 
+            
 
 
         elif action.startswith(
             "TREAT_"
+
         ):
 
             reasoning_state.performed_treatments.append(
