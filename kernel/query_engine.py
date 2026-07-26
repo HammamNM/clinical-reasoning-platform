@@ -121,4 +121,32 @@ class QueryEngine:
             )
 
 
+    def hypotheses_with_contradictions(
+
+    self
+
+):
+
+    contradiction_targets = set()
+
+
+    for edge in self.edges_by_relation(
+        "CONTRADICTS"
+    ):
+
+        contradiction_targets.add(
+            edge.target
+        )
+
+
+    return [
+
+        node
+
+        for node in self.graph.nodes
+
+        if node.id in contradiction_targets
+
+    ]
+
     return supported
