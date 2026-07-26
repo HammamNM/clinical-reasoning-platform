@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 import uuid
-
+from kernel.reasoning_state import (
+    ReasoningState
+)
 from kernel.events import EventStream
 
 
@@ -25,4 +27,8 @@ class KernelSession:
 
     metadata: dict = field(
         default_factory=dict
+    )
+
+    reasoning_state: ReasoningState = field(
+        default_factory=ReasoningState
     )
