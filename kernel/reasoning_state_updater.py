@@ -2,10 +2,15 @@ from kernel.hypothesis_manager import (
     HypothesisManager
 )
 
-self.hypothesis_manager = (
-    HypothesisManager()
-)
+
 class ReasoningStateUpdater:
+
+
+    def __init__(self):
+
+        self.hypothesis_manager = (
+            HypothesisManager()
+        )
 
 
     def update(
@@ -13,7 +18,6 @@ class ReasoningStateUpdater:
         reasoning_state,
         event
     ):
-
 
         payload = getattr(
             event,
@@ -54,35 +58,19 @@ class ReasoningStateUpdater:
             "DIAGNOSIS_"
         ):
 
-            from kernel.hypothesis import Hypothesis
+            self.hypothesis_manager.create(
 
-            
-        self.hypothesis_manager.create(
+                reasoning_state,
 
-            reasoning_state,
+                action,
 
-            action,
+                trigger=action
 
-            trigger=action
-
-        )
-            Hypothesis(
-
-            name=action,
-
-            confidence=0.50,
-
-            created_by=action
-
-        )
-
-                  ) 
-            
+            )
 
 
         elif action.startswith(
             "TREAT_"
-
         ):
 
             reasoning_state.performed_treatments.append(
