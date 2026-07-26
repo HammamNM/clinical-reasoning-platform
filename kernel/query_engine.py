@@ -71,3 +71,54 @@ class QueryEngine:
         return self.graph.incoming_edges(
             node_id
         )
+
+
+    def hypotheses_supported_by(
+
+    self,
+
+    minimum_support=1
+
+):
+
+    support_counter = {}
+
+
+    for edge in self.edges_by_relation(
+        "SUPPORTS"
+    ):
+
+        support_counter.setdefault(
+            edge.target,
+            0
+        )
+
+        support_counter[
+            edge.target
+        ] += 1
+
+
+    supported = []
+
+
+    for node in self.graph.nodes:
+
+        if (
+
+            support_counter.get(
+                node.id,
+                0
+            )
+
+            >=
+
+            minimum_support
+
+        ):
+
+            supported.append(
+                node
+            )
+
+
+    return supported
