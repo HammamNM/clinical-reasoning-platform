@@ -1,17 +1,29 @@
+from kernel.query_engine import (
+    QueryEngine
+)
+
+
 class AnchoringDetector:
 
 
     def detect(
         self,
-        reasoning_state
+        reasoning_graph
     ):
+
+        query = QueryEngine(
+            reasoning_graph
+        )
 
         detected = []
 
 
-        for hypothesis in (
-            reasoning_state.active_hypotheses
-        ):
+        candidates = (
+            query.hypotheses_with_contradictions()
+        )
+
+
+        for hypothesis in candidates:
 
             if self.is_anchored(
                 hypothesis
@@ -19,11 +31,9 @@ class AnchoringDetector:
 
                 detected.append({
 
-                    "pattern_id":
-                        "CP-201",
+                    "pattern_id": "CP-201",
 
-                    "hypothesis":
-                        hypothesis.name,
+                    "hypothesis": hypothesis.content,
 
                     "reason":
                         "Hypothesis maintained despite contradicting evidence"
@@ -40,45 +50,32 @@ class AnchoringDetector:
         hypothesis
     ):
 
-        has_contradiction = (
+        if not hasattr(
+            hypothesis,
+            "confidence"
+        ):
 
-            len(
-                hypothesis.contradicting_evidence
-            ) > 0
+            return False
 
+
+        if hypothesis.confidence < 0.70:
+
+            return False
+
+
+        history = getattr(
+            hypothesis,
+            "confidence_history",
+            []
         )
 
 
-        has_high_confidence = (
+        if len(history) == 0:
 
-            hypothesis.confidence >= 0.70
-
-        )
+            return False
 
 
-        no_revision = (
-
-            len(
-                hypothesis.confidence_history
-            ) > 0
-
-            and
-
-            hypothesis.confidence_history[-1].change >= 0
-
-        )
+        last_change = history[-1].change
 
 
-        return (
-
-            has_contradiction
-
-            and
-
-            has_high_confidence
-
-            and
-
-            no_revision
-
-        )
+        return last_change >= 0
