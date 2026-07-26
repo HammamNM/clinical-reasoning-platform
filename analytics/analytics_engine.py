@@ -1,3 +1,6 @@
+from analytics.cognitive_pattern_pipeline import (
+    CognitivePatternPipeline
+)
 from analytics.pattern_detector import PatternDetector
 from analytics.performance_analyzer import PerformanceAnalyzer
 from analytics.reasoning_analyzer import ReasoningAnalyzer
@@ -17,6 +20,9 @@ class AnalyticsEngine:
 
     def __init__(self):
 
+        self.cognitive_pipeline = (
+            CognitivePatternPipeline()
+        )
         self.pattern_extractor = (
             CognitivePatternExtractor()
         )
@@ -39,7 +45,11 @@ class AnalyticsEngine:
             ReportGenerator()
         )
 
-
+        cognitive_data = (
+            self.cognitive_pipeline.analyze(
+                session
+            )
+        )
     def generate_report(
         self,
         session,
