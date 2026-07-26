@@ -1,3 +1,10 @@
+from kernel.hypothesis_manager import (
+    HypothesisManager
+)
+
+self.hypothesis_manager = (
+    HypothesisManager()
+)
 class ReasoningStateUpdater:
 
 
@@ -48,8 +55,17 @@ class ReasoningStateUpdater:
         ):
 
             from kernel.hypothesis import Hypothesis
-               reasoning_state.active_hypotheses.append(
 
+            
+        self.hypothesis_manager.create(
+
+            reasoning_state,
+
+            action,
+
+            trigger=action
+
+        )
             Hypothesis(
 
             name=action,
