@@ -21,40 +21,33 @@ class CognitivePatternPipeline:
         )
 
 
-
     def analyze(
         self,
-        session
+        reasoning_graph
     ):
 
         patterns = []
 
-
-        anchoring_patterns = (
-            self.anchoring_detector.detect(
-                session.reasoning_state
-            )
-        )
-
-
         patterns.extend(
-            anchoring_patterns
-        )
 
+            self.anchoring_detector.detect(
+                reasoning_graph
+            )
+
+        )
 
         metrics = (
+
             self.metric_engine.evaluate(
                 patterns
             )
-        )
 
+        )
 
         return {
 
-            "patterns":
-                patterns,
+            "patterns": patterns,
 
-            "metrics":
-                metrics
+            "metrics": metrics
 
         }
