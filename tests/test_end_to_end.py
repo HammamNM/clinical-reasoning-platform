@@ -1,10 +1,15 @@
+from kernel.runtime import KernelRuntime
 from simulation.orchestrator import SimulationOrchestrator
 from analytics.analytics_engine import AnalyticsEngine
 
 
 def main():
 
-    orchestrator = SimulationOrchestrator()
+    runtime = KernelRuntime()
+
+    orchestrator = SimulationOrchestrator(
+        runtime
+    )
 
     actions = [
 
@@ -20,22 +25,19 @@ def main():
 
     ]
 
-
-    orchestrator.run_session(
+    session = orchestrator.run_session(
         actions
     )
-
 
     analytics = AnalyticsEngine()
 
     report = analytics.generate_report(
 
-        session=orchestrator.kernel_runtime.session,
+        session=session,
 
-        reasoning_graph=orchestrator.kernel_runtime.graph_builder.graph
+        reasoning_graph=runtime.graph_builder.graph
 
     )
-
 
     print("\n========== FINAL REPORT ==========\n")
 
