@@ -56,13 +56,17 @@ class PerformanceAnalyzer:
         for dimension, scores in dimensions.items():
 
             averages[dimension] = (
+
                 sum(scores)
+
                 /
+
                 len(scores)
+
             )
 
 
-               return averages
+        return averages
 
 
     def calculate_progress_trend(
@@ -71,8 +75,11 @@ class PerformanceAnalyzer:
     ):
 
         scores = [
+
             profile.total_score
+
             for profile in session.decision_history
+
         ]
 
 
@@ -82,23 +89,35 @@ class PerformanceAnalyzer:
 
 
         first_average = (
+
             sum(scores[:len(scores)//2])
+
             /
+
             len(scores[:len(scores)//2])
+
         )
 
 
         second_average = (
+
             sum(scores[len(scores)//2:])
+
             /
+
             len(scores[len(scores)//2:])
+
         )
 
 
         difference = (
+
             second_average
+
             -
+
             first_average
+
         )
 
 
@@ -113,6 +132,8 @@ class PerformanceAnalyzer:
 
 
         return "STABLE"
+
+
     def analyze(
         self,
         session
@@ -121,16 +142,19 @@ class PerformanceAnalyzer:
         return {
 
             "average_score":
+
                 self.calculate_average_score(
                     session
                 ),
 
             "dimensions":
+
                 self.calculate_dimension_scores(
                     session
                 ),
 
             "trend":
+
                 self.calculate_progress_trend(
                     session
                 )
