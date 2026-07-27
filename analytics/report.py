@@ -9,118 +9,86 @@ class ReportGenerator:
         cognitive_data=None
     ):
 
-        cognitive_data = (
-            cognitive_data
-            if cognitive_data is not None
-            else {
+        if cognitive_data is None:
+
+            cognitive_data = {
+
                 "patterns": [],
+
                 "metrics": []
+
             }
-        )
-
-
-        cognitive_patterns = []
-
-        for pattern in cognitive_data.get(
-            "patterns",
-            []
-        ):
-
-            cognitive_patterns.append({
-
-                "pattern_id":
-                    pattern.pattern_id,
-
-                "name":
-                    pattern.name,
-
-                "category":
-                    pattern.category,
-
-                "description":
-                    pattern.description,
-
-                "evidence":
-                    pattern.evidence
-
-            })
-
-
-        cognitive_metrics = []
-
-        for metric in cognitive_data.get(
-            "metrics",
-            []
-        ):
-
-            cognitive_metrics.append({
-
-                "name":
-                    metric.name,
-
-                "score":
-                    metric.score,
-
-                "explanation":
-                    metric.explanation
-
-            })
 
 
         return {
 
             "session_id":
+
                 session.session_id,
 
+
             "scenario_id":
+
                 session.scenario_id,
 
 
-            "average_score":
-                performance_data.get(
-                    "average_score",
-                    0
-                ),
+            "performance": {
+
+                "average_score":
+
+                    performance_data.get(
+
+                        "average_score",
+
+                        0
+
+                    ),
+
+                "dimension_scores":
+
+                    performance_data.get(
+
+                        "dimensions",
+
+                        {}
+
+                    ),
+
+                "progress_trend":
+
+                    performance_data.get(
+
+                        "trend",
+
+                        "INSUFFICIENT_DATA"
+
+                    )
+
+            },
 
 
-            "dimension_scores":
-                performance_data.get(
-                    "dimensions",
-                    {}
-                ),
+            "cognitive":
 
-
-            "progress_trend":
-                performance_data.get(
-                    "trend",
-                    "INSUFFICIENT_DATA"
-                ),
+                cognitive_data,
 
 
             "patterns":
+
                 patterns,
-
-
-            "cognitive": {
-
-                "patterns":
-                    cognitive_patterns,
-
-                "metrics":
-                    cognitive_metrics
-
-            },
 
 
             "outcome": {
 
                 "status":
+
                     session.outcome.status,
 
                 "severity":
+
                     session.outcome.severity,
 
                 "description":
+
                     session.outcome.description
 
             }
