@@ -1,18 +1,18 @@
 from analytics.cognitive_pattern_pipeline import (
     CognitivePatternPipeline
 )
-from analytics.pattern_detector import PatternDetector
-from analytics.performance_analyzer import PerformanceAnalyzer
-from analytics.reasoning_analyzer import ReasoningAnalyzer
-from analytics.report import ReportGenerator
-from analytics.cognitive_patterns import (
-    CognitivePatternExtractor
+
+from analytics.performance_analyzer import (
+    PerformanceAnalyzer
 )
 
-from analytics.cognitive_metrics import (
-    CognitiveMetricEngine
+from analytics.reasoning_analyzer import (
+    ReasoningAnalyzer
 )
 
+from analytics.report import (
+    ReportGenerator
+)
 
 
 class AnalyticsEngine:
@@ -23,15 +23,6 @@ class AnalyticsEngine:
         self.cognitive_pipeline = (
             CognitivePatternPipeline()
         )
-        self.pattern_extractor = (
-            CognitivePatternExtractor()
-        )
-
-        self.metric_engine = (
-            CognitiveMetricEngine()
-        )
-        
-        self.pattern_detector = PatternDetector()
 
         self.performance_analyzer = (
             PerformanceAnalyzer()
@@ -45,99 +36,85 @@ class AnalyticsEngine:
             ReportGenerator()
         )
 
-        cognitive_data = (
-            self.cognitive_pipeline.analyze(
-                session
-            )
-        )
+
     def generate_report(
+
         self,
+
         session,
-        event_bridge,
-        reasoning_graph=None
+
+        reasoning_graph
+
     ):
 
-        patterns = (
-            self.pattern_detector.analyze(
-                event_bridge
+        cognitive_data = (
+
+            self.cognitive_pipeline.analyze(
+
+                reasoning_graph
+
             )
+
         )
 
-        cognitive_patterns = (
-        self.pattern_extractor.extract(
-            event_bridge
-        )
-    )
 
-        cognitive_metrics = (
-        self.metric_engine.evaluate(
-        cognitive_patterns
-        )
-    )
         performance_data = (
+
             self.performance_analyzer.analyze(
+
                 session
+
             )
+
         )
 
 
-        reasoning_data = {}
+        reasoning_metrics = (
 
-        reasoning_path = []
+            self.reasoning_analyzer.analyze_graph(
 
+                reasoning_graph
 
-        if reasoning_graph is not None:
-
-            reasoning_data = (
-                self.reasoning_analyzer.analyze_graph(
-                    reasoning_graph
-                )
             )
 
-            reasoning_path = (
-                self.reasoning_analyzer.extract_reasoning_path(
-                    reasoning_graph
-                )
+        )
+
+
+        reasoning_path = (
+
+            self.reasoning_analyzer.extract_reasoning_path(
+
+                reasoning_graph
+
             )
 
-
-                cognitive_data = {
-
-            "patterns":
-                cognitive_patterns,
-
-            "metrics":
-                cognitive_metrics
-
-        }
+        )
 
 
         report = (
+
             self.report_generator.generate(
 
-                session,
+                session=session,
 
-                performance_data,
+                performance_data=performance_data,
 
-                patterns,
+                patterns=[],
 
-                cognitive_data
+                cognitive_data=cognitive_data
 
             )
+
         )
 
 
         report["reasoning"] = {
 
-            "metrics":
-                reasoning_data,
+            "metrics": reasoning_metrics,
 
-            "path":
-                reasoning_path
+            "path": reasoning_path
 
         }
 
-        
-       
-        
+
         return report
