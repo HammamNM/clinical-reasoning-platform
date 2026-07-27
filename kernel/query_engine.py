@@ -75,78 +75,79 @@ class QueryEngine:
 
     def hypotheses_supported_by(
 
-    self,
+        self,
 
-    minimum_support=1
+        minimum_support=1
 
-):
-
-    support_counter = {}
-
-
-    for edge in self.edges_by_relation(
-        "SUPPORTS"
     ):
 
-        support_counter.setdefault(
-            edge.target,
-            0
-        )
-
-        support_counter[
-            edge.target
-        ] += 1
+        support_counter = {}
 
 
-    supported = []
+        for edge in self.edges_by_relation(
+            "SUPPORTS"
+        ):
 
-
-    for node in self.graph.nodes:
-
-        if (
-
-            support_counter.get(
-                node.id,
+            support_counter.setdefault(
+                edge.target,
                 0
             )
 
-            >=
+            support_counter[
+                edge.target
+            ] += 1
 
-            minimum_support
 
-        ):
+        supported = []
 
-            supported.append(
-                node
-            )
+
+        for node in self.graph.nodes:
+
+            if (
+
+                support_counter.get(
+                    node.id,
+                    0
+                )
+
+                >=
+
+                minimum_support
+
+            ):
+
+                supported.append(
+                    node
+                )
+
+
+        return supported
 
 
     def hypotheses_with_contradictions(
 
-    self
+        self
 
-):
-
-    contradiction_targets = set()
-
-
-    for edge in self.edges_by_relation(
-        "CONTRADICTS"
     ):
 
-        contradiction_targets.add(
-            edge.target
-        )
+        contradiction_targets = set()
 
 
-    return [
+        for edge in self.edges_by_relation(
+            "CONTRADICTS"
+        ):
 
-        node
+            contradiction_targets.add(
+                edge.target
+            )
 
-        for node in self.graph.nodes
 
-        if node.id in contradiction_targets
+        return [
 
-    ]
+            node
 
-    return supported
+            for node in self.graph.nodes
+
+            if node.id in contradiction_targets
+
+        ]
