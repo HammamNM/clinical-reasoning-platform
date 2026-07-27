@@ -1,9 +1,5 @@
 from dataclasses import dataclass
 
-from analytics.cognitive_metric_rules import (
-    CognitiveMetricRuleEngine
-)
-
 
 @dataclass
 class CognitiveMetric:
@@ -18,70 +14,44 @@ class CognitiveMetric:
 class CognitiveMetricEngine:
 
 
-    def __init__(self):
-
-        self.rule_engine = (
-            CognitiveMetricRuleEngine()
-        )
-
 
     def evaluate(
         self,
         patterns
     ):
 
-        adjustments = (
-            self.rule_engine.evaluate(
-                patterns
-            )
-        )
-
-
         metrics = []
 
+        total_penalty = len(patterns) * 10
 
-        for name, adjustment in (
-            adjustments.items()
-        ):
+        score = max(
+            0.0,
+            100.0 - total_penalty
+        )
 
-            score = 100.0 + adjustment
+        metrics.append(
 
+            CognitiveMetric(
 
-            score = max(
-                0.0,
-                min(
-                    100.0,
-                    score
-                )
-            )
+                name="Clinical Reasoning",
 
+                score=score,
 
-            explanation = (
-                self.build_explanation(
-                    name,
+                explanation=self.build_explanation(
+
+                    "Clinical Reasoning",
+
                     score,
+
                     patterns
-                )
-            )
-
-
-            metrics.append(
-
-                CognitiveMetric(
-
-                    name=name,
-
-                    score=score,
-
-                    explanation=explanation
 
                 )
 
             )
 
+        )
 
         return metrics
-
 
     def build_explanation(
         self,
