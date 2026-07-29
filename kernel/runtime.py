@@ -1,14 +1,23 @@
 from kernel.reasoning_graph_builder import (
     ReasoningGraphBuilder
 )
-from analytics.event_bridge import EventBridge
-from kernel.events import ReasoningEvent
-from kernel.registry import EngineRegistry
-from kernel.session import KernelSession
-from kernel.reasoning_graph_builder import ReasoningGraphBuilder
+
+from kernel.events import (
+    ReasoningEvent
+)
+
+from kernel.registry import (
+    EngineRegistry
+)
+
+from kernel.session import (
+    KernelSession
+)
+
 from kernel.reasoning_state_updater import (
     ReasoningStateUpdater
 )
+
 
 class KernelRuntime:
 
@@ -27,16 +36,16 @@ class KernelRuntime:
         self.registry = EngineRegistry()
 
         self.event_queue = []
+
         self.graph_builder = (
-        ReasoningGraphBuilder()
+            ReasoningGraphBuilder()
         )
-        self.event_bridge = EventBridge()
-        self.reasoning_builder = ReasoningGraphBuilder()
 
         self.reasoning_updater = (
-        ReasoningStateUpdater()
+            ReasoningStateUpdater()
         )
-        
+
+
     def register_engine(
         self,
         engine
@@ -46,7 +55,6 @@ class KernelRuntime:
             engine
         )
 
-        
 
     def publish(
         self,
@@ -57,15 +65,14 @@ class KernelRuntime:
             event,
             ReasoningEvent
         ):
+
             raise TypeError(
                 "KernelRuntime accepts only ReasoningEvent"
             )
 
-
         self.event_queue.append(
             event
         )
-
 
 
     def run_cycle(
@@ -74,10 +81,7 @@ class KernelRuntime:
 
         while self.event_queue:
 
-            event = (
-                self.event_queue.pop(0)
-            )
-
+            event = self.event_queue.pop(0)
 
             self.session.event_stream.publish(
                 event
@@ -86,29 +90,18 @@ class KernelRuntime:
             self.graph_builder.process_event(
                 event
             )
-            
+
             self.reasoning_updater.update(
-
-            self.session.reasoning_state,
-
-            event
-
-            )
-            
-            self.event_bridge.collect(
+                self.session.reasoning_state,
                 event
             )
 
-            self.reasoning_builder.process_event(
-                event
-            )
             generated_events = (
                 self.registry.dispatch(
                     event,
                     self.session
                 )
             )
-
 
             for generated_event in generated_events:
 
