@@ -1,15 +1,42 @@
-from kernel.runtime import KernelRuntime
-from simulation.orchestrator import SimulationOrchestrator
-from analytics.analytics_engine import AnalyticsEngine
+from backend.session import ClinicalSession
+
+from kernel.bootstrap import (
+    KernelBootstrap
+)
+
+from simulation.orchestrator import (
+    SimulationOrchestrator
+)
+
+from analytics.analytics_engine import (
+    AnalyticsEngine
+)
 
 
 def main():
 
-    runtime = KernelRuntime()
+
+    clinical_session = ClinicalSession(
+
+        student_id="TEST_STUDENT",
+
+        scenario_id="NSTEMI_TEST"
+
+    )
+
+
+    bootstrap = KernelBootstrap()
+
+
+    runtime = bootstrap.create_runtime(
+        clinical_session
+    )
+
 
     orchestrator = SimulationOrchestrator(
         runtime
     )
+
 
     actions = [
 
@@ -19,29 +46,37 @@ def main():
 
         "ORDER_TROPONIN",
 
-        "DIAGNOSIS_NSTEMI",
+        "DECISION_ASSESSMENT",
 
         "TREAT_ASPIRIN"
 
     ]
 
+
     session = orchestrator.run_session(
         actions
     )
 
+
     analytics = AnalyticsEngine()
+
 
     report = analytics.generate_report(
 
-        session=session,
+        session,
 
-        reasoning_graph=runtime.graph_builder.graph
+        runtime.event_bridge
+        if hasattr(runtime, "event_bridge")
+        else None,
+
+        runtime.graph_builder.graph
 
     )
 
-    print("\n========== FINAL REPORT ==========\n")
 
-    print(report)
+    print(
+        report
+    )
 
 
 if __name__ == "__main__":
