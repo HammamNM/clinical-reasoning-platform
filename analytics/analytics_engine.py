@@ -43,19 +43,56 @@ class AnalyticsEngine:
 
         session,
 
-        reasoning_graph
+        reasoning_graph=None
 
     ):
 
-        cognitive_data = (
+        cognitive_data = {
 
-            self.cognitive_pipeline.analyze(
+            "patterns": [],
 
-                reasoning_graph
+            "metrics": []
+
+        }
+
+        reasoning_metrics = {}
+
+        reasoning_path = []
+
+
+        if reasoning_graph is not None:
+
+            cognitive_data = (
+
+                self.cognitive_pipeline.analyze(
+
+                    reasoning_graph
+
+                )
 
             )
 
-        )
+
+            reasoning_metrics = (
+
+                self.reasoning_analyzer.analyze_graph(
+
+                    reasoning_graph
+
+                )
+
+            )
+
+
+            reasoning_path = (
+
+                self.reasoning_analyzer.extract_reasoning_path(
+
+                    reasoning_graph
+
+                )
+
+            )
 
 
         performance_data = (
@@ -63,28 +100,6 @@ class AnalyticsEngine:
             self.performance_analyzer.analyze(
 
                 session
-
-            )
-
-        )
-
-
-        reasoning_metrics = (
-
-            self.reasoning_analyzer.analyze_graph(
-
-                reasoning_graph
-
-            )
-
-        )
-
-
-        reasoning_path = (
-
-            self.reasoning_analyzer.extract_reasoning_path(
-
-                reasoning_graph
 
             )
 
