@@ -12,7 +12,6 @@ class DecisionEngineAdapter:
         self.decision_engine = decision_engine
 
 
-
     def process_event(
         self,
         event,
@@ -24,19 +23,21 @@ class DecisionEngineAdapter:
             return None
 
 
-        action = (
-            event.payload.get(
-                "action"
-            )
+        action = event.payload.get(
+            "action"
         )
 
 
         profile = (
-            self.decision_engine
-            .evaluate_decision(
+            self.decision_engine.evaluate_decision(
                 session,
                 action
             )
+        )
+
+
+        session.decision_history.append(
+            profile
         )
 
 
@@ -45,8 +46,11 @@ class DecisionEngineAdapter:
             event_type="DECISION_ASSESSMENT",
 
             payload={
+
                 "action": action,
+
                 "profile": profile
+
             },
 
             source="DECISION_ADAPTER"
