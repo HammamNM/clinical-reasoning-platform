@@ -1,9 +1,13 @@
 from dataclasses import dataclass, field
 import uuid
+
 from kernel.reasoning_state import (
     ReasoningState
 )
-from kernel.events import EventStream
+
+from kernel.events import (
+    EventStream
+)
 
 
 @dataclass
@@ -29,6 +33,20 @@ class KernelSession:
         default_factory=dict
     )
 
+
     reasoning_state: ReasoningState = field(
         default_factory=ReasoningState
     )
+
+
+    # أضف هذه الحقول
+
+    decision_history: list = field(
+        default_factory=list
+    )
+
+
+    outcome = None
+
+
+    scenario_id: str = ""
