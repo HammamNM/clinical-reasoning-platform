@@ -39,7 +39,6 @@ class KernelSession:
     )
 
 
-    # أضف هذه الحقول
 
     decision_history: list = field(
         default_factory=list
