@@ -1,48 +1,52 @@
-from kernel.events import ReasoningEvent
+from kernel.events import (
+    ReasoningEvent
+)
+
 
 class SimulationOrchestrator:
 
-def __init__(  
-    self,  
-    runtime  
-):  
 
-    self.runtime = runtime  
+    def __init__(
+        self,
+        runtime
+    ):
 
-
-def process_student_action(  
-    self,  
-    action  
-):  
-
-    event = ReasoningEvent(  
-
-        event_type="ACTION",  
-
-        payload={  
-            "action": action  
-        },  
-
-        source="STUDENT"  
-
-    )  
-
-    self.runtime.publish(  
-        event  
-    )  
-
-    self.runtime.run_cycle()  
+        self.runtime = runtime
 
 
-def run_session(  
-    self,  
-    actions  
-):  
+    def process_student_action(
+        self,
+        action
+    ):
 
-    for action in actions:  
+        event = ReasoningEvent(
 
-        self.process_student_action(  
-            action  
-        )  
+            event_type="ACTION",
 
-    return self.runtime.session
+            payload={
+                "action": action
+            },
+
+            source="STUDENT"
+
+        )
+
+        self.runtime.publish(
+            event
+        )
+
+        self.runtime.run_cycle()
+
+
+    def run_session(
+        self,
+        actions
+    ):
+
+        for action in actions:
+
+            self.process_student_action(
+                action
+            )
+
+        return self.runtime.session
