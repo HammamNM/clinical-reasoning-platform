@@ -1,5 +1,9 @@
 from kernel.events import EventStream
 
+from kernel.reasoning_state import (
+    ReasoningState
+)
+
 
 class ClinicalSessionAdapter:
 
@@ -12,6 +16,8 @@ class ClinicalSessionAdapter:
         self.clinical_session = clinical_session
 
         self.event_stream = EventStream()
+
+        self.reasoning_state = ReasoningState()
 
 
     @property
