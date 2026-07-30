@@ -15,7 +15,6 @@ from analytics.analytics_engine import (
 
 def main():
 
-
     clinical_session = ClinicalSession(
 
         student_id="TEST_STUDENT",
@@ -24,19 +23,15 @@ def main():
 
     )
 
-
     bootstrap = KernelBootstrap()
-
 
     runtime = bootstrap.create_runtime(
         clinical_session
     )
 
-
     orchestrator = SimulationOrchestrator(
         runtime
     )
-
 
     actions = [
 
@@ -46,37 +41,25 @@ def main():
 
         "ORDER_TROPONIN",
 
-        "DECISION_ASSESSMENT",
-
         "TREAT_ASPIRIN"
 
     ]
-
 
     session = orchestrator.run_session(
         actions
     )
 
-
     analytics = AnalyticsEngine()
-
 
     report = analytics.generate_report(
 
         session,
 
-        runtime.event_bridge
-        if hasattr(runtime, "event_bridge")
-        else None,
-
         runtime.graph_builder.graph
 
     )
 
-
-    print(
-        report
-    )
+    print(report)
 
 
 if __name__ == "__main__":
