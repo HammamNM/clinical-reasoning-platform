@@ -2,9 +2,14 @@ from analytics.anchoring_detector import (
     AnchoringDetector
 )
 
+from analytics.premature_closure_detector import (
+    PrematureClosureDetector
+)
+
 from analytics.cognitive_metrics import (
     CognitiveMetricEngine
 )
+
 
 
 class CognitivePatternPipeline:
@@ -12,13 +17,19 @@ class CognitivePatternPipeline:
 
     def __init__(self):
 
-        self.anchoring_detector = (
-            AnchoringDetector()
-        )
+        self.detectors = [
+
+            AnchoringDetector(),
+
+            PrematureClosureDetector()
+
+        ]
+
 
         self.metric_engine = (
             CognitiveMetricEngine()
         )
+
 
 
     def analyze(
@@ -26,28 +37,49 @@ class CognitivePatternPipeline:
         reasoning_graph
     ):
 
+
         patterns = []
 
-        patterns.extend(
 
-            self.anchoring_detector.detect(
+        for detector in self.detectors:
+
+
+            detected_patterns = detector.detect(
+
                 reasoning_graph
+
             )
 
-        )
+
+            patterns.extend(
+
+                detected_patterns
+
+            )
+
+
 
         metrics = (
 
             self.metric_engine.evaluate(
+
                 patterns
+
             )
 
         )
 
+
+
         return {
 
-            "patterns": patterns,
+            "patterns":
 
-            "metrics": metrics
+                patterns,
+
+
+            "metrics":
+
+                metrics
 
         }
