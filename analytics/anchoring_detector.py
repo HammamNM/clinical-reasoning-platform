@@ -2,6 +2,11 @@ from kernel.query_engine import (
     QueryEngine
 )
 
+from kernel.models import (
+    PrimitiveType
+)
+
+
 
 class AnchoringDetector:
 
@@ -15,28 +20,42 @@ class AnchoringDetector:
             reasoning_graph
         )
 
+
         detected = []
 
 
-        candidates = (
-            query.hypotheses_with_contradictions()
+        hypotheses = query.nodes_by_primitive(
+            PrimitiveType.HYPOTHESIS
         )
 
 
-        for hypothesis in candidates:
+        for hypothesis in hypotheses:
 
-            if self.is_anchored(
-                hypothesis
+
+            if self.has_contradicting_evidence(
+                query,
+                hypothesis.id
             ):
+
 
                 detected.append({
 
-                    "pattern_id": "CP-201",
+                    "pattern_id":
+                        "CP-201",
 
-                    "hypothesis": hypothesis.content,
+
+                    "name":
+                        "Anchoring Bias",
+
+
+                    "hypothesis":
+
+                        hypothesis.content,
+
 
                     "reason":
-                        "Hypothesis maintained despite contradicting evidence"
+
+                        "Hypothesis remained active despite contradictory evidence"
 
                 })
 
@@ -45,37 +64,32 @@ class AnchoringDetector:
 
 
 
-    def is_anchored(
+    def has_contradicting_evidence(
         self,
-        hypothesis
+        query,
+        hypothesis_id
     ):
 
-        if not hasattr(
-            hypothesis,
-            "confidence"
-        ):
 
-            return False
+        contradictions = (
 
 
-        if hypothesis.confidence < 0.70:
+            query.edges_by_relation(
 
-            return False
+                "CONTRADICTS"
 
+            )
 
-        history = getattr(
-            hypothesis,
-            "confidence_history",
-            []
         )
 
 
-        if len(history) == 0:
-
-            return False
+        for edge in contradictions:
 
 
-        last_change = history[-1].change
+            if edge["target"] == hypothesis_id:
+
+                return True
 
 
-        return last_change >= 0
+
+        return False
