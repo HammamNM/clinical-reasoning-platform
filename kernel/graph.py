@@ -1,3 +1,17 @@
+from dataclasses import dataclass
+
+
+@dataclass
+class Edge:
+
+    source: str
+
+    target: str
+
+    relation: str = "SEQUENCE"
+
+
+
 class ReasoningGraph:
 
 
@@ -8,16 +22,17 @@ class ReasoningGraph:
         self.edges = []
 
 
-
     def add_node(
+
         self,
+
         node
+
     ):
 
         self.nodes.append(
             node
         )
-
 
 
     def add_edge(
@@ -32,16 +47,19 @@ class ReasoningGraph:
 
     ):
 
-        self.edges.append({
+        self.edges.append(
 
-            "source": source,
+            Edge(
 
-            "target": target,
+                source=source,
 
-            "relation": relation
+                target=target,
 
-        })
+                relation=relation
 
+            )
+
+        )
 
 
     def outgoing_edges(
@@ -58,10 +76,9 @@ class ReasoningGraph:
 
             for edge in self.edges
 
-            if edge["source"] == node_id
+            if edge.source == node_id
 
         ]
-
 
 
     def incoming_edges(
@@ -78,6 +95,6 @@ class ReasoningGraph:
 
             for edge in self.edges
 
-            if edge["target"] == node_id
+            if edge.target == node_id
 
         ]
