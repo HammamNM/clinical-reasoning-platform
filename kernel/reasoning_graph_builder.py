@@ -40,9 +40,11 @@ class ReasoningGraphBuilder:
     ):
 
         primitive = (
+
             self.classify_event(
-                event.event_type
+                event
             )
+
         )
 
 
@@ -69,16 +71,14 @@ class ReasoningGraphBuilder:
         )
 
 
-        if primitive == PrimitiveType.DECISION:
+        if primitive == PrimitiveType.HYPOTHESIS:
 
             self.last_hypothesis_node = node.id
-
 
 
         self.connect_previous(
             node.id
         )
-
 
 
         if (
@@ -108,38 +108,80 @@ class ReasoningGraphBuilder:
 
     def classify_event(
         self,
-        event_type
+        event
     ):
 
-
-        mapping = {
-
-
-            "HISTORY_RESPONSE_REQUEST":
-
-                PrimitiveType.OBSERVATION,
-
-
-            "INVESTIGATION_RESULT":
-
-                PrimitiveType.INVESTIGATION,
-
-
-            "DECISION_ASSESSMENT":
-
-                PrimitiveType.DECISION,
-
-
-            "OUTCOME_UPDATED":
-
-                PrimitiveType.OUTCOME
-
-        }
-
-
-        return mapping.get(
-            event_type
+        payload = getattr(
+            event,
+            "payload",
+            {}
         )
+
+
+        action = payload.get(
+            "action",
+            ""
+        )
+
+
+        event_type = event.event_type
+
+
+
+        if event_type == "OUTCOME_UPDATED":
+
+            return PrimitiveType.OUTCOME
+
+
+
+        if event_type == "INVESTIGATION_RESULT":
+
+            return PrimitiveType.INVESTIGATION
+
+
+
+        if event_type == "DECISION_ASSESSMENT":
+
+            return PrimitiveType.DECISION
+
+
+
+        if event_type == "ACTION":
+
+
+            if action.startswith(
+                "ASK_"
+            ):
+
+                return PrimitiveType.OBSERVATION
+
+
+
+            if action.startswith(
+                "ORDER_"
+            ):
+
+                return PrimitiveType.INVESTIGATION
+
+
+
+            if action.startswith(
+                "DIAGNOSIS_"
+            ):
+
+                return PrimitiveType.HYPOTHESIS
+
+
+
+            if action.startswith(
+                "TREAT_"
+            ):
+
+                return PrimitiveType.DECISION
+
+
+
+        return None
 
 
 
