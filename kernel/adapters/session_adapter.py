@@ -21,25 +21,74 @@ class ClinicalSessionAdapter:
 
 
     @property
-    def active_case(self):
+    def session_id(
+        self
+    ):
+        return self.clinical_session.session_id
+
+
+    @property
+    def student_id(
+        self
+    ):
+        return self.clinical_session.student_id
+
+
+    @property
+    def scenario_id(
+        self
+    ):
+        return self.clinical_session.scenario_id
+
+
+    @property
+    def active_case(
+        self
+    ):
         return self.clinical_session.active_case
 
 
     @property
-    def outcome(self):
+    def outcome(
+        self
+    ):
         return self.clinical_session.outcome
 
 
     @property
-    def decision_history(self):
+    def decision_history(
+        self
+    ):
         return self.clinical_session.decision_history
 
 
     @property
-    def state(self):
+    def state(
+        self
+    ):
         return self.clinical_session.state
 
 
     @property
-    def clock(self):
+    def clock(
+        self
+    ):
         return self.clinical_session.clock
+
+
+    @property
+    def finished(
+        self
+    ):
+        return self.clinical_session.finished
+
+
+    @property
+    def metadata(
+        self
+    ):
+        return getattr(
+            self.clinical_session,
+            "metadata",
+            {}
+        )
