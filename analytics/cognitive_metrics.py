@@ -11,6 +11,7 @@ class CognitiveMetric:
     explanation: str
 
 
+
 class CognitiveMetricEngine:
 
 
@@ -55,12 +56,14 @@ class CognitiveMetricEngine:
         return metrics
 
 
+
     def calculate_penalty(
         self,
         patterns
     ):
 
         penalty = 0
+
 
         weights = {
 
@@ -72,11 +75,15 @@ class CognitiveMetricEngine:
 
             "Availability Bias": 10,
 
+            "Search Satisfaction": 10,
+
             "Overconfidence": 10
 
         }
 
+
         for pattern in patterns:
+
 
             if isinstance(pattern, dict):
 
@@ -84,6 +91,7 @@ class CognitiveMetricEngine:
                     "name",
                     ""
                 )
+
 
             else:
 
@@ -93,12 +101,15 @@ class CognitiveMetricEngine:
                     ""
                 )
 
+
             penalty += weights.get(
                 name,
                 0
             )
 
+
         return penalty
+
 
 
     def build_explanation(
@@ -114,6 +125,7 @@ class CognitiveMetricEngine:
                 f"{name} is strong."
             )
 
+
         if score >= 75:
 
             return (
@@ -121,12 +133,14 @@ class CognitiveMetricEngine:
                 f"but has room for improvement."
             )
 
+
         if score >= 50:
 
             return (
                 f"{name} shows a meaningful "
                 f"area for improvement."
             )
+
 
         return (
             f"{name} shows a significant "
