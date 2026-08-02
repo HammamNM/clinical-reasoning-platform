@@ -14,6 +14,10 @@ from analytics.availability_bias_detector import (
     AvailabilityBiasDetector
 )
 
+from analytics.search_satisfaction_detector import (
+    SearchSatisfactionDetector
+)
+
 from analytics.cognitive_metrics import (
     CognitiveMetricEngine
 )
@@ -33,7 +37,9 @@ class CognitivePatternPipeline:
 
             ConfirmationBiasDetector(),
 
-            AvailabilityBiasDetector()
+            AvailabilityBiasDetector(),
+
+            SearchSatisfactionDetector()
 
         ]
 
