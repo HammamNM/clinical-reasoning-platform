@@ -6,6 +6,10 @@ from analytics.premature_closure_detector import (
     PrematureClosureDetector
 )
 
+from analytics.confirmation_bias_detector import (
+    ConfirmationBiasDetector
+)
+
 from analytics.cognitive_metrics import (
     CognitiveMetricEngine
 )
@@ -21,7 +25,9 @@ class CognitivePatternPipeline:
 
             AnchoringDetector(),
 
-            PrematureClosureDetector()
+            PrematureClosureDetector(),
+
+            ConfirmationBiasDetector()
 
         ]
 
