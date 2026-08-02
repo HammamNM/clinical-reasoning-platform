@@ -14,7 +14,6 @@ class CognitiveMetric:
 class CognitiveMetricEngine:
 
 
-
     def evaluate(
         self,
         patterns
@@ -22,24 +21,26 @@ class CognitiveMetricEngine:
 
         metrics = []
 
-        total_penalty = len(patterns) * 10
+        penalty = self.calculate_penalty(
+            patterns
+        )
 
         score = max(
             0.0,
-            100.0 - total_penalty
+            100.0 - penalty
         )
 
         metrics.append(
 
             CognitiveMetric(
 
-                name="Clinical Reasoning",
+                name="Reasoning Quality",
 
                 score=score,
 
                 explanation=self.build_explanation(
 
-                    "Clinical Reasoning",
+                    "Reasoning Quality",
 
                     score,
 
@@ -52,6 +53,53 @@ class CognitiveMetricEngine:
         )
 
         return metrics
+
+
+    def calculate_penalty(
+        self,
+        patterns
+    ):
+
+        penalty = 0
+
+        weights = {
+
+            "Anchoring Bias": 15,
+
+            "Premature Closure": 15,
+
+            "Confirmation Bias": 12,
+
+            "Availability Bias": 10,
+
+            "Overconfidence": 10
+
+        }
+
+        for pattern in patterns:
+
+            if isinstance(pattern, dict):
+
+                name = pattern.get(
+                    "name",
+                    ""
+                )
+
+            else:
+
+                name = getattr(
+                    pattern,
+                    "name",
+                    ""
+                )
+
+            penalty += weights.get(
+                name,
+                0
+            )
+
+        return penalty
+
 
     def build_explanation(
         self,
@@ -66,7 +114,6 @@ class CognitiveMetricEngine:
                 f"{name} is strong."
             )
 
-
         if score >= 75:
 
             return (
@@ -74,14 +121,12 @@ class CognitiveMetricEngine:
                 f"but has room for improvement."
             )
 
-
         if score >= 50:
 
             return (
                 f"{name} shows a meaningful "
                 f"area for improvement."
             )
-
 
         return (
             f"{name} shows a significant "
