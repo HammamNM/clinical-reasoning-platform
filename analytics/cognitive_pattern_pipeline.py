@@ -18,6 +18,10 @@ from analytics.search_satisfaction_detector import (
     SearchSatisfactionDetector
 )
 
+from analytics.overconfidence_detector import (
+    OverconfidenceDetector
+)
+
 from analytics.cognitive_metrics import (
     CognitiveMetricEngine
 )
@@ -39,7 +43,9 @@ class CognitivePatternPipeline:
 
             AvailabilityBiasDetector(),
 
-            SearchSatisfactionDetector()
+            SearchSatisfactionDetector(),
+
+            OverconfidenceDetector()
 
         ]
 
