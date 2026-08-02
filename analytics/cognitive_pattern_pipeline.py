@@ -10,18 +10,6 @@ from analytics.confirmation_bias_detector import (
     ConfirmationBiasDetector
 )
 
-from analytics.availability_bias_detector import (
-    AvailabilityBiasDetector
-)
-
-from analytics.search_satisfaction_detector import (
-    SearchSatisfactionDetector
-)
-
-from analytics.overconfidence_detector import (
-    OverconfidenceDetector
-)
-
 from analytics.cognitive_metrics import (
     CognitiveMetricEngine
 )
@@ -39,13 +27,7 @@ class CognitivePatternPipeline:
 
             PrematureClosureDetector(),
 
-            ConfirmationBiasDetector(),
-
-            AvailabilityBiasDetector(),
-
-            SearchSatisfactionDetector(),
-
-            OverconfidenceDetector()
+            ConfirmationBiasDetector()
 
         ]
 
