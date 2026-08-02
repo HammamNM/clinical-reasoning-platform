@@ -10,6 +10,10 @@ from analytics.confirmation_bias_detector import (
     ConfirmationBiasDetector
 )
 
+from analytics.availability_bias_detector import (
+    AvailabilityBiasDetector
+)
+
 from analytics.cognitive_metrics import (
     CognitiveMetricEngine
 )
@@ -27,7 +31,9 @@ class CognitivePatternPipeline:
 
             PrematureClosureDetector(),
 
-            ConfirmationBiasDetector()
+            ConfirmationBiasDetector(),
+
+            AvailabilityBiasDetector()
 
         ]
 
