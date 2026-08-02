@@ -49,12 +49,10 @@ class AnchoringDetector:
 
 
                     "hypothesis":
-
                         hypothesis.content,
 
 
                     "reason":
-
                         "Hypothesis remained active despite contradictory evidence"
 
                 })
@@ -73,7 +71,6 @@ class AnchoringDetector:
 
         contradictions = (
 
-
             query.edges_by_relation(
 
                 "CONTRADICTS"
@@ -86,7 +83,7 @@ class AnchoringDetector:
         for edge in contradictions:
 
 
-            if edge["target"] == hypothesis_id:
+            if edge.target == hypothesis_id:
 
                 return True
 
