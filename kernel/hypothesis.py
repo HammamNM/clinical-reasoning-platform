@@ -14,14 +14,10 @@ class Hypothesis:
         default_factory=list
     )
 
-    contradicting_evidence: list = field(
-        default_factory=list
-    )
-
     confidence_history: list = field(
         default_factory=list
     )
-    
+
     created_by: str | None = None
 
     last_updated: str | None = None
