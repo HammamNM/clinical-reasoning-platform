@@ -2,7 +2,6 @@ from kernel.query_engine import QueryEngine
 from kernel.models import PrimitiveType
 
 
-
 class AvailabilityBiasDetector:
 
 
@@ -15,27 +14,29 @@ class AvailabilityBiasDetector:
             reasoning_graph
         )
 
-
         detected = []
-
 
         hypotheses = query.nodes_by_primitive(
             PrimitiveType.HYPOTHESIS
         )
 
-
         investigations = query.nodes_by_primitive(
             PrimitiveType.INVESTIGATION
         )
 
+        decisions = query.nodes_by_primitive(
+            PrimitiveType.DECISION
+        )
+
+        if len(investigations) > 0:
+
+            return detected
+
+        if len(decisions) == 0:
+
+            return detected
 
         for hypothesis in hypotheses:
-
-
-            if len(investigations) > 0:
-
-                continue
-
 
             if not self.has_observation_support(
                 query,
@@ -44,29 +45,23 @@ class AvailabilityBiasDetector:
 
                 continue
 
-
             detected.append({
 
                 "pattern_id":
                     "CP-204",
 
-
                 "name":
                     "Availability Bias",
-
 
                 "hypothesis":
                     hypothesis.content,
 
-
                 "reason":
-                    "Hypothesis selected with limited evidence and no investigation"
+                    "Diagnosis progressed to a decision without additional evidence collection"
 
             })
 
-
         return detected
-
 
 
     def has_observation_support(
@@ -75,7 +70,6 @@ class AvailabilityBiasDetector:
         hypothesis_id
     ):
 
-
         for edge in query.incoming(
             hypothesis_id
         ):
@@ -83,6 +77,5 @@ class AvailabilityBiasDetector:
             if edge.relation == "SUPPORTS":
 
                 return True
-
 
         return False
