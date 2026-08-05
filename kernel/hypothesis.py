@@ -10,6 +10,10 @@ class Hypothesis:
 
     status: str = "ACTIVE"
 
+    supporting_evidence: list = field(
+        default_factory=list
+    )
+
     contradicting_evidence: list = field(
         default_factory=list
     )
