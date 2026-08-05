@@ -1,53 +1,51 @@
 from kernel.events import ReasoningEvent
 
-
 class InvestigationEngine:
 
+def process_event(  
+    self,  
+    event,  
+    session  
+):  
 
-    def process_event(
-        self,
-        event,
-        session
-    ):
+    if event.event_type != "ACTION":  
 
-        if event.event_type != "ACTION":
-
-            return None
-
-
-        investigations = (
-            session.active_case.get(
-                "investigations",
-                {}
-            )
-        )
+        return None  
 
 
-        action = event.payload.get(
-            "action"
-        )
+    investigations = (  
+        session.active_case.get(  
+            "investigations",  
+            {}  
+        )  
+    )  
 
 
-        if action not in investigations:
-
-            return None
-
-
-        result = investigations[action]
+    action = event.payload.get(  
+        "action"  
+    )  
 
 
-        return ReasoningEvent(
+    if action not in investigations:  
 
-            event_type="INVESTIGATION_RESULT",
+        return None  
 
-            payload={
 
-                "action": action,
+    result = investigations[action]  
 
-                "result": result
 
-            },
+    return ReasoningEvent(  
 
-            source="INVESTIGATION_ENGINE"
+        event_type="INVESTIGATION_RESULT",  
 
-        )
+        payload={  
+
+            "action": action,  
+
+            "result": result  
+
+        },  
+
+        source="INVESTIGATION_ENGINE"  
+
+    )
