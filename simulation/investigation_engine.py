@@ -1,6 +1,4 @@
-from kernel.events import (
-    ReasoningEvent
-)
+from kernel.events import ReasoningEvent
 
 
 class InvestigationEngine:
@@ -14,7 +12,7 @@ class InvestigationEngine:
 
         if event.event_type != "ACTION":
 
-            return
+            return None
 
 
         investigations = (
@@ -25,37 +23,31 @@ class InvestigationEngine:
         )
 
 
-        action = (
-            event.payload.get(
-                "action"
-            )
+        action = event.payload.get(
+            "action"
         )
 
 
         if action not in investigations:
 
-            return
+            return None
 
 
         result = investigations[action]
 
 
-        session.event_stream.publish(
+        return ReasoningEvent(
 
-            ReasoningEvent(
+            event_type="INVESTIGATION_RESULT",
 
-                event_type="INVESTIGATION_RESULT",
+            payload={
 
-                payload={
+                "action": action,
 
-                    "action": action,
+                "result": result
 
-                    "result": result
+            },
 
-                },
-
-                source="INVESTIGATION_ENGINE"
-
-            )
+            source="INVESTIGATION_ENGINE"
 
         )
