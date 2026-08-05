@@ -28,6 +28,23 @@ class QueryEngine:
         ]
 
 
+    def node_by_id(
+
+        self,
+
+        node_id
+
+    ):
+
+        for node in self.graph.nodes:
+
+            if node.id == node_id:
+
+                return node
+
+        return None
+
+
     def edges_by_relation(
 
         self,
@@ -73,6 +90,52 @@ class QueryEngine:
         )
 
 
+    def outgoing_by_relation(
+
+        self,
+
+        node_id,
+
+        relation
+
+    ):
+
+        return [
+
+            edge
+
+            for edge in self.outgoing(
+                node_id
+            )
+
+            if edge.relation == relation
+
+        ]
+
+
+    def incoming_by_relation(
+
+        self,
+
+        node_id,
+
+        relation
+
+    ):
+
+        return [
+
+            edge
+
+            for edge in self.incoming(
+                node_id
+            )
+
+            if edge.relation == relation
+
+        ]
+
+
     def hypotheses_supported_by(
 
         self,
@@ -110,9 +173,7 @@ class QueryEngine:
                     0
                 )
 
-                >=
-
-                minimum_support
+                >= minimum_support
 
             ):
 
