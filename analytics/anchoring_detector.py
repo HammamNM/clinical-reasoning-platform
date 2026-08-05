@@ -95,16 +95,31 @@ class AnchoringDetector:
                 continue
 
 
+            source_node = query.node_by_id(
+                edge.source
+            )
+
+
             evidence.append({
 
                 "relation":
                     edge.relation,
 
-                "source":
-                    edge.source,
+                "source": {
+
+                    "id":
+                        source_node.id,
+
+                    "primitive":
+                        source_node.primitive.value,
+
+                    "content":
+                        source_node.content
+
+                },
 
                 "target":
-                    edge.target
+                    hypothesis_id
 
             })
 
