@@ -1,7 +1,14 @@
-from kernel.events import ReasoningEvent
+class InvestigationEngineAdapter:
 
 
-class InvestigationEngine:
+    def __init__(
+        self,
+        investigation_engine
+    ):
+
+        self.investigation_engine = (
+            investigation_engine
+        )
 
 
     def process_event(
@@ -10,44 +17,7 @@ class InvestigationEngine:
         session
     ):
 
-        if event.event_type != "ACTION":
-
-            return None
-
-
-        investigations = (
-            session.active_case.get(
-                "investigations",
-                {}
-            )
-        )
-
-
-        action = event.payload.get(
-            "action"
-        )
-
-
-        if action not in investigations:
-
-            return None
-
-
-        result = investigations[action]
-
-
-        return ReasoningEvent(
-
-            event_type="INVESTIGATION_RESULT",
-
-            payload={
-
-                "action": action,
-
-                "result": result
-
-            },
-
-            source="INVESTIGATION_ENGINE"
-
+        return self.investigation_engine.process_event(
+            event,
+            session
         )
