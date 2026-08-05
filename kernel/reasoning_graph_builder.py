@@ -20,6 +20,8 @@ class ReasoningGraphBuilder:
 
         self.last_hypothesis_node = None
 
+        self.last_investigation_node = None
+
 
 
     def create_node_id(
@@ -76,30 +78,16 @@ class ReasoningGraphBuilder:
             self.last_hypothesis_node = node.id
 
 
+
+        if primitive == PrimitiveType.INVESTIGATION:
+
+            self.last_investigation_node = node.id
+
+
+
         self.connect_previous(
             node.id
         )
-
-
-        if (
-
-            primitive == PrimitiveType.INVESTIGATION
-
-            and
-
-            self.last_hypothesis_node is not None
-
-        ):
-
-            self.graph.add_edge(
-
-                node.id,
-
-                self.last_hypothesis_node,
-
-                relation="SUPPORTS"
-
-            )
 
 
         return node
