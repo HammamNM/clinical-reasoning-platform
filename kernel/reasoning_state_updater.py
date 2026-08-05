@@ -58,15 +58,85 @@ class ReasoningStateUpdater:
             "DIAGNOSIS_"
         ):
 
-            self.hypothesis_manager.create(
+            hypothesis = self.hypothesis_manager.find(
 
                 reasoning_state,
 
-                action,
-
-                trigger=action
+                action
 
             )
+
+
+            if hypothesis is None:
+
+                self.hypothesis_manager.create(
+
+                    reasoning_state,
+
+                    action,
+
+                    trigger=action
+
+                )
+
+
+        elif action.startswith(
+            "CONFIRM_"
+        ):
+
+            hypothesis_name = action.replace(
+                "CONFIRM_",
+                "DIAGNOSIS_"
+            )
+
+
+            hypothesis = self.hypothesis_manager.find(
+
+                reasoning_state,
+
+                hypothesis_name
+
+            )
+
+
+            if hypothesis is not None:
+
+                self.hypothesis_manager.confirm(
+                    hypothesis
+                )
+
+                reasoning_state.confirmed_hypotheses.append(
+                    hypothesis
+                )
+
+
+        elif action.startswith(
+            "REJECT_"
+        ):
+
+            hypothesis_name = action.replace(
+                "REJECT_",
+                "DIAGNOSIS_"
+            )
+
+
+            hypothesis = self.hypothesis_manager.find(
+
+                reasoning_state,
+
+                hypothesis_name
+            )
+
+
+            if hypothesis is not None:
+
+                self.hypothesis_manager.reject(
+
+                    reasoning_state,
+
+                    hypothesis
+
+                )
 
 
         elif action.startswith(
