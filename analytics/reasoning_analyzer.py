@@ -19,23 +19,21 @@ class ReasoningAnalyzer:
             reasoning_graph.edges
         )
 
+
         primitive_counts = {}
 
 
         for node in reasoning_graph.nodes:
 
-            primitive = (
-                node.primitive.value
-            )
+            primitive = node.primitive.value
 
             primitive_counts.setdefault(
                 primitive,
                 0
             )
 
-            primitive_counts[
-                primitive
-            ] += 1
+            primitive_counts[primitive] += 1
+
 
 
         metrics = {
@@ -74,12 +72,107 @@ class ReasoningAnalyzer:
                 primitive_counts.get(
                     "OUTCOME",
                     0
+                ),
+
+            "reasoning_features":
+                self.extract_reasoning_features(
+                    reasoning_graph
                 )
 
         }
 
 
         return metrics
+
+
+
+    def extract_reasoning_features(
+        self,
+        reasoning_graph
+    ):
+
+        features = {
+
+            "first_hypothesis_step":
+                None,
+
+            "first_decision_step":
+                None,
+
+            "investigations_before_decision":
+                0,
+
+            "hypothesis_count_before_decision":
+                0
+
+        }
+
+
+        for index, node in enumerate(
+            reasoning_graph.nodes,
+            start=1
+        ):
+
+
+            if (
+
+                node.primitive == PrimitiveType.HYPOTHESIS
+
+                and
+
+                features["first_hypothesis_step"] is None
+
+            ):
+
+                features["first_hypothesis_step"] = index
+
+
+
+            if (
+
+                node.primitive == PrimitiveType.DECISION
+
+                and
+
+                features["first_decision_step"] is None
+
+            ):
+
+                features["first_decision_step"] = index
+
+
+
+        decision_step = features[
+            "first_decision_step"
+        ]
+
+
+        if decision_step is not None:
+
+
+            for node in reasoning_graph.nodes[
+
+                :decision_step - 1
+
+            ]:
+
+
+                if node.primitive == PrimitiveType.INVESTIGATION:
+
+                    features[
+                        "investigations_before_decision"
+                    ] += 1
+
+
+                if node.primitive == PrimitiveType.HYPOTHESIS:
+
+                    features[
+                        "hypothesis_count_before_decision"
+                    ] += 1
+
+
+
+        return features
 
 
 
@@ -96,6 +189,28 @@ class ReasoningAnalyzer:
             start=1
         ):
 
+            incoming = [
+
+                edge.relation
+
+                for edge in reasoning_graph.incoming_edges(
+                    node.id
+                )
+
+            ]
+
+
+            outgoing = [
+
+                edge.relation
+
+                for edge in reasoning_graph.outgoing_edges(
+                    node.id
+                )
+
+            ]
+
+
             path.append({
 
                 "step":
@@ -108,7 +223,13 @@ class ReasoningAnalyzer:
                     node.primitive.value,
 
                 "content":
-                    node.content
+                    node.content,
+
+                "incoming_relations":
+                    incoming,
+
+                "outgoing_relations":
+                    outgoing
 
             })
 
