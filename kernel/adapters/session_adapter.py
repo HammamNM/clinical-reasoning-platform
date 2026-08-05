@@ -15,7 +15,9 @@ class ClinicalSessionAdapter:
 
         self.clinical_session = clinical_session
 
-        self.event_stream = EventStream()
+        self.event_stream = (
+            clinical_session.event_stream
+                )
 
         self.reasoning_state = ReasoningState()
 
