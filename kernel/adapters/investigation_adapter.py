@@ -1,15 +1,7 @@
 from kernel.events import ReasoningEvent
 
 
-class InvestigationEngineAdapter:
-
-
-    def __init__(
-        self,
-        investigation_engine
-    ):
-
-        self.investigation_engine = investigation_engine
+class InvestigationEngine:
 
 
     def process_event(
@@ -23,25 +15,39 @@ class InvestigationEngineAdapter:
             return None
 
 
-        before = len(
-            session.event_stream.get_all()
+        investigations = (
+            session.active_case.get(
+                "investigations",
+                {}
+            )
         )
 
 
-        self.investigation_engine.process_event(
-            event,
-            session
+        action = event.payload.get(
+            "action"
         )
 
 
-        after = (
-            session.event_stream.get_all()[before:]
-        )
-
-
-        if not after:
+        if action not in investigations:
 
             return None
 
 
-        return after
+        result = investigations[action]
+
+
+        return ReasoningEvent(
+
+            event_type="INVESTIGATION_RESULT",
+
+            payload={
+
+                "action": action,
+
+                "result": result
+
+            },
+
+            source="INVESTIGATION_ENGINE"
+
+        )
