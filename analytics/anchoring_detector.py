@@ -20,9 +20,7 @@ class AnchoringDetector:
             reasoning_graph
         )
 
-
         detected = []
-
 
         hypotheses = query.nodes_by_primitive(
             PrimitiveType.HYPOTHESIS
@@ -32,61 +30,107 @@ class AnchoringDetector:
         for hypothesis in hypotheses:
 
 
-            if self.has_contradicting_evidence(
+            evidence = self.get_contradicting_evidence(
+
                 query,
+
                 hypothesis.id
-            ):
+
+            )
 
 
-                detected.append({
+            if len(evidence) == 0:
 
-                    "pattern_id":
-                        "CP-201",
-
-
-                    "name":
-                        "Anchoring Bias",
+                continue
 
 
-                    "hypothesis":
-                        hypothesis.content,
+            detected.append({
 
+                "pattern_id":
+                    "CP-201",
 
-                    "reason":
-                        "Hypothesis remained active despite contradictory evidence"
+                "name":
+                    "Anchoring Bias",
 
-                })
+                "hypothesis":
+                    hypothesis.content,
+
+                "reason":
+                    "Hypothesis remained active despite contradictory evidence",
+
+                "severity":
+                    self.calculate_severity(
+                        evidence
+                    ),
+
+                "evidence":
+                    evidence
+
+            })
 
 
         return detected
 
 
 
-    def has_contradicting_evidence(
+    def get_contradicting_evidence(
         self,
         query,
         hypothesis_id
     ):
 
+        evidence = []
 
-        contradictions = (
 
-            query.edges_by_relation(
-
-                "CONTRADICTS"
-
-            )
-
+        contradictions = query.edges_by_relation(
+            "CONTRADICTS"
         )
 
 
         for edge in contradictions:
 
 
-            if edge.target == hypothesis_id:
+            if edge.target != hypothesis_id:
 
-                return True
+                continue
+
+
+            evidence.append({
+
+                "relation":
+                    edge.relation,
+
+                "source":
+                    edge.source,
+
+                "target":
+                    edge.target
+
+            })
+
+
+        return evidence
 
 
 
-        return False
+    def calculate_severity(
+        self,
+        evidence
+    ):
+
+        count = len(
+            evidence
+        )
+
+
+        if count >= 3:
+
+            return "HIGH"
+
+
+        if count >= 2:
+
+            return "MEDIUM"
+
+
+        return "LOW"
