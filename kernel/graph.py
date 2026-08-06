@@ -8,7 +8,7 @@ class Edge:
 
     target: str
 
-    relation: str = "SEQUENCE"
+    relation: str = "NEXT"
 
 
 
@@ -20,6 +20,7 @@ class ReasoningGraph:
         self.nodes = []
 
         self.edges = []
+
 
 
     def add_node(
@@ -35,6 +36,7 @@ class ReasoningGraph:
         )
 
 
+
     def add_edge(
 
         self,
@@ -43,7 +45,7 @@ class ReasoningGraph:
 
         target,
 
-        relation="SEQUENCE"
+        relation="NEXT"
 
     ):
 
@@ -60,6 +62,7 @@ class ReasoningGraph:
             )
 
         )
+
 
 
     def outgoing_edges(
@@ -79,6 +82,7 @@ class ReasoningGraph:
             if edge.source == node_id
 
         ]
+
 
 
     def incoming_edges(
