@@ -136,6 +136,55 @@ class QueryEngine:
         ]
 
 
+        def next_nodes(
+
+        self,
+
+        node_id
+
+    ):
+
+        return [
+
+            self.node_by_id(
+                edge.target
+            )
+
+            for edge in self.outgoing_by_relation(
+
+                node_id,
+
+                "NEXT"
+
+            )
+
+        ]
+
+
+
+    def previous_nodes(
+
+        self,
+
+        node_id
+
+    ):
+
+        return [
+
+            self.node_by_id(
+                edge.source
+            )
+
+            for edge in self.incoming_by_relation(
+
+                node_id,
+
+                "NEXT"
+
+            )
+
+        ]
     def hypotheses_supported_by(
 
         self,
