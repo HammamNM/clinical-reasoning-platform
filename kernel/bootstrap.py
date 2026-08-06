@@ -1,6 +1,8 @@
 from kernel.runtime import KernelRuntime
 from kernel.adapters.session_adapter import ClinicalSessionAdapter
-
+from kernel.evidence_engine import (
+    EvidenceEngine
+)
 
 from kernel.adapters.decision_adapter import (
     DecisionEngineAdapter
@@ -72,5 +74,11 @@ class KernelBootstrap:
 
         )
 
+
+        runtime.register_engine(
+
+            EvidenceEngine()
+
+        )
 
         return runtime
