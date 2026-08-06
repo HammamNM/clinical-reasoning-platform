@@ -3,8 +3,9 @@ from kernel.models import (
     PrimitiveType
 )
 
-from kernel.graph import ReasoningGraph
-
+from kernel.graph import (
+    ReasoningGraph
+)
 
 
 class ReasoningGraphBuilder:
@@ -18,9 +19,7 @@ class ReasoningGraphBuilder:
 
         self.counter = 0
 
-        self.last_hypothesis_node = None
-
-        self.last_investigation_node = None
+        self.last_node_id = None
 
 
 
@@ -73,21 +72,12 @@ class ReasoningGraphBuilder:
         )
 
 
-        if primitive == PrimitiveType.HYPOTHESIS:
-
-            self.last_hypothesis_node = node.id
-
-
-
-        if primitive == PrimitiveType.INVESTIGATION:
-
-            self.last_investigation_node = node.id
-
-
-
         self.connect_previous(
             node.id
         )
+
+
+        self.last_node_id = node.id
 
 
         return node
@@ -178,22 +168,18 @@ class ReasoningGraphBuilder:
         current_id
     ):
 
-        nodes = self.graph.nodes
-
-
-        if len(nodes) < 2:
+        if self.last_node_id is None:
 
             return
 
 
-        previous = nodes[-2]
-
-
         self.graph.add_edge(
 
-            previous.id,
+            self.last_node_id,
 
-            current_id
+            current_id,
+
+            relation="NEXT"
 
         )
 
