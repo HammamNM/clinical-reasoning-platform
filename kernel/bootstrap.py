@@ -1,5 +1,9 @@
 from kernel.runtime import KernelRuntime
-from kernel.adapters.session_adapter import ClinicalSessionAdapter
+
+from kernel.adapters.session_adapter import (
+    ClinicalSessionAdapter
+)
+
 from kernel.evidence_engine import (
     EvidenceEngine
 )
@@ -16,17 +20,26 @@ from kernel.adapters.investigation_adapter import (
     InvestigationEngineAdapter
 )
 
+from decision_engine.engine import (
+    DecisionEngine
+)
 
-from decision_engine.engine import DecisionEngine
+from outcome_engine.engine import (
+    OutcomeEngine
+)
 
-from outcome_engine.engine import OutcomeEngine
-from outcome_engine.mapper import OutcomeMapper
+from outcome_engine.mapper import (
+    OutcomeMapper
+)
 
-from simulation.investigation_engine import InvestigationEngine
+from simulation.investigation_engine import (
+    InvestigationEngine
+)
 
 from kernel.transition_engine import (
     TransitionEngine
 )
+
 
 class KernelBootstrap:
 
@@ -85,7 +98,10 @@ class KernelBootstrap:
 
 
         runtime.register_engine(
+
             TransitionEngine()
+
         )
+
 
         return runtime
