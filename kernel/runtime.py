@@ -19,6 +19,7 @@ from kernel.reasoning_state_updater import (
 )
 
 
+
 class KernelRuntime:
 
 
@@ -28,22 +29,35 @@ class KernelRuntime:
     ):
 
         self.session = (
+
             session
+
             if session
+
             else KernelSession()
+
         )
+
 
         self.registry = EngineRegistry()
 
+
         self.event_queue = []
 
+
         self.graph_builder = (
+
             ReasoningGraphBuilder()
+
         )
 
+
         self.reasoning_updater = (
+
             ReasoningStateUpdater()
+
         )
+
 
 
     def register_engine(
@@ -56,23 +70,31 @@ class KernelRuntime:
         )
 
 
+
     def publish(
         self,
         event
     ):
 
         if not isinstance(
+
             event,
+
             ReasoningEvent
+
         ):
 
             raise TypeError(
+
                 "KernelRuntime accepts only ReasoningEvent"
+
             )
+
 
         self.event_queue.append(
             event
         )
+
 
 
     def run_cycle(
@@ -81,25 +103,49 @@ class KernelRuntime:
 
         while self.event_queue:
 
+
             event = self.event_queue.pop(0)
+
+
 
             self.session.event_stream.publish(
                 event
             )
+
+
 
             self.graph_builder.process_event(
                 event
             )
 
 
-            generated_events = (
-                self.registry.dispatch(
-                    event,
-                    self.session
-                )
+
+            self.reasoning_updater.update(
+
+                self.session.reasoning_state,
+
+                event
+
             )
 
+
+
+            generated_events = (
+
+                self.registry.dispatch(
+
+                    event,
+
+                    self.session
+
+                )
+
+            )
+
+
+
             for generated_event in generated_events:
+
 
                 self.publish(
                     generated_event
