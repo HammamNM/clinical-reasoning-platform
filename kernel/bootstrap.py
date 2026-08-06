@@ -24,7 +24,9 @@ from outcome_engine.mapper import OutcomeMapper
 
 from simulation.investigation_engine import InvestigationEngine
 
-
+from kernel.transition_engine import (
+    TransitionEngine
+)
 
 class KernelBootstrap:
 
@@ -79,6 +81,11 @@ class KernelBootstrap:
 
             EvidenceEngine()
 
+        )
+
+
+        runtime.register_engine(
+            TransitionEngine()
         )
 
         return runtime
