@@ -91,10 +91,6 @@ class KernelRuntime:
                 event
             )
 
-            self.reasoning_updater.update(
-                self.session.reasoning_state,
-                event
-            )
 
             generated_events = (
                 self.registry.dispatch(
