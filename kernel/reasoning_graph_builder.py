@@ -273,3 +273,35 @@ class ReasoningGraphBuilder:
             EdgeRelation.CONTRADICTS
 
         )
+    def connect_confirmation(
+        self,
+        action_node_id,
+        hypothesis_node_id
+    ):
+
+        self.graph.add_edge(
+
+            action_node_id,
+
+            hypothesis_node_id,
+
+            EdgeRelation.CONFIRMS
+
+        )
+
+
+    def connect_rejection(
+        self,
+        action_node_id,
+        hypothesis_node_id
+    ):
+
+        self.graph.add_edge(
+
+            action_node_id,
+
+            hypothesis_node_id,
+
+            EdgeRelation.REJECTS
+
+        )
