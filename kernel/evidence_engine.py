@@ -1,9 +1,10 @@
-from kernel.evidence import Evidence
-
-from kernel.confidence_engine import (
-    ConfidenceEngine
+from kernel.evidence import (
+    Evidence
 )
 
+from kernel.hypothesis_manager import (
+    HypothesisManager
+)
 
 
 class EvidenceEngine:
@@ -11,10 +12,9 @@ class EvidenceEngine:
 
     def __init__(self):
 
-        self.confidence_engine = (
-            ConfidenceEngine()
+        self.hypothesis_manager = (
+            HypothesisManager()
         )
-
 
 
     def process_event(
@@ -23,16 +23,41 @@ class EvidenceEngine:
         session
     ):
 
-
-        if event.event_type != "INVESTIGATION_RESULT":
+        if event.event_type != (
+            "INVESTIGATION_RESULT"
+        ):
 
             return None
 
 
-
-        result = event.payload.get(
-            "result",
+        payload = getattr(
+            event,
+            "payload",
             {}
+        )
+
+
+        result = payload.get(
+            "result",
+            ""
+        )
+
+
+        supports = payload.get(
+            "supports",
+            []
+        )
+
+
+        contradicts = payload.get(
+            "contradicts",
+            []
+        )
+
+
+        strength = payload.get(
+            "strength",
+            1.0
         )
 
 
@@ -40,9 +65,21 @@ class EvidenceEngine:
 
             source=event.source,
 
-            content=str(result),
+            content=str(
+                result
+            ),
 
-            strength=0.2
+            supports=list(
+                supports
+            ),
+
+            contradicts=list(
+                contradicts
+            ),
+
+            strength=float(
+                strength
+            )
 
         )
 
@@ -55,32 +92,51 @@ class EvidenceEngine:
             session.evidence = []
 
 
-
         session.evidence.append(
             evidence
         )
 
 
+        for hypothesis_name in supports:
 
-        hypotheses = getattr(
-            session.reasoning_state,
-            "hypotheses",
-            []
-        )
-
-
-
-        for hypothesis in hypotheses:
-
-
-            self.confidence_engine.update_from_evidence(
-
-                hypothesis,
-
-                evidence
-
+            hypothesis = (
+                self.hypothesis_manager.find(
+                    session.reasoning_state,
+                    hypothesis_name
+                )
             )
 
+
+            if hypothesis is not None:
+
+                self.hypothesis_manager.add_supporting_evidence(
+
+                    hypothesis,
+
+                    evidence
+
+                )
+
+
+        for hypothesis_name in contradicts:
+
+            hypothesis = (
+                self.hypothesis_manager.find(
+                    session.reasoning_state,
+                    hypothesis_name
+                )
+            )
+
+
+            if hypothesis is not None:
+
+                self.hypothesis_manager.add_contradicting_evidence(
+
+                    hypothesis,
+
+                    evidence
+
+                )
 
 
         return None
