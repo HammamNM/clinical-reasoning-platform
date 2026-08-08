@@ -3,7 +3,10 @@ from kernel.models import (
     PrimitiveType
 )
 
-from kernel.graph import ReasoningGraph
+from kernel.graph import (
+    ReasoningGraph,
+    EdgeRelation
+)
 
 from kernel.provenance import (
     ProvenanceRecord
@@ -92,6 +95,11 @@ class ReasoningGraphBuilder:
 
         self.connect_previous(
             node.id
+        )
+
+
+        self.connect_semantic_relation(
+            node
         )
 
 
@@ -188,7 +196,40 @@ class ReasoningGraphBuilder:
 
             previous.id,
 
-            current_id
+            current_id,
+
+            EdgeRelation.SEQUENCE
+
+        )
+
+
+    def connect_semantic_relation(
+        self,
+        node
+    ):
+
+        if node.primitive != PrimitiveType.INVESTIGATION:
+
+            return
+
+
+        if self.last_hypothesis_node is None:
+
+            return
+
+
+        if node.id == self.last_hypothesis_node:
+
+            return
+
+
+        self.graph.add_edge(
+
+            node.id,
+
+            self.last_hypothesis_node,
+
+            EdgeRelation.DERIVED_FROM
 
         )
 
@@ -205,7 +246,7 @@ class ReasoningGraphBuilder:
 
             hypothesis_node_id,
 
-            relation="SUPPORTS"
+            EdgeRelation.SUPPORTS
 
         )
 
@@ -222,6 +263,6 @@ class ReasoningGraphBuilder:
 
             hypothesis_node_id,
 
-            relation="CONTRADICTS"
+            EdgeRelation.CONTRADICTS
 
         )
