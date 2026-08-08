@@ -28,6 +28,8 @@ class ReasoningGraphBuilder:
 
         self.last_investigation_node = None
 
+        self.hypothesis_nodes = {}
+
 
     def create_node_id(
         self
@@ -88,6 +90,20 @@ class ReasoningGraphBuilder:
             self.last_hypothesis_node = node.id
 
 
+            hypothesis_name = (
+                event.payload.get(
+                    "action"
+                )
+            )
+
+
+            if hypothesis_name:
+
+                self.hypothesis_nodes[
+                    hypothesis_name
+                ] = node.id
+
+
         if primitive == PrimitiveType.INVESTIGATION:
 
             self.last_investigation_node = node.id
@@ -95,11 +111,6 @@ class ReasoningGraphBuilder:
 
         self.connect_previous(
             node.id
-        )
-
-
-        self.connect_semantic_relation(
-            node
         )
 
 
@@ -203,35 +214,31 @@ class ReasoningGraphBuilder:
         )
 
 
-    def connect_semantic_relation(
+    def find_hypothesis_node(
         self,
-        node
+        hypothesis_name
     ):
 
-        if node.primitive != PrimitiveType.INVESTIGATION:
-
-            return
-
-
-        if self.last_hypothesis_node is None:
-
-            return
-
-
-        if node.id == self.last_hypothesis_node:
-
-            return
-
-
-        self.graph.add_edge(
-
-            node.id,
-
-            self.last_hypothesis_node,
-
-            EdgeRelation.DERIVED_FROM
-
+        node_id = (
+            self.hypothesis_nodes.get(
+                hypothesis_name
+            )
         )
+
+
+        if node_id is None:
+
+            return None
+
+
+        for node in self.graph.nodes:
+
+            if node.id == node_id:
+
+                return node
+
+
+        return None
 
 
     def connect_support(
