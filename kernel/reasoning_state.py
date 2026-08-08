@@ -33,3 +33,7 @@ class ReasoningState:
     transitions: TransitionRecorder = field(
     default_factory=TransitionRecorder
     )
+
+    hypotheses: list = field(
+    default_factory=list
+    )
