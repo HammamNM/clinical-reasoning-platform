@@ -49,6 +49,14 @@ from simulation.scenario_engine import (
 
 from simulation.time_engine import TimeEngine
 
+from kernel.adapters.patient_evolution_adapter import (
+    PatientEvolutionAdapter
+)
+
+from simulation.patient_evolution import (
+    PatientEvolutionEngine
+)
+
 
 class KernelBootstrap:
 
@@ -136,6 +144,16 @@ class KernelBootstrap:
         runtime.register_engine(
 
             TimeEngine()
+
+        )
+
+        runtime.register_engine(
+
+            PatientEvolutionAdapter(
+
+                PatientEvolutionEngine()
+
+            )
 
         )
 
