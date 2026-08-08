@@ -1,4 +1,6 @@
-from kernel.hypothesis import Hypothesis
+from kernel.hypothesis import (
+    Hypothesis
+)
 
 from kernel.confidence import (
     ConfidenceTracker
@@ -6,6 +8,13 @@ from kernel.confidence import (
 
 
 class HypothesisManager:
+
+
+    VALID_STATUSES = {
+        "ACTIVE",
+        "CONFIRMED",
+        "REJECTED"
+    }
 
 
     def __init__(self):
@@ -39,6 +48,8 @@ class HypothesisManager:
 
             confidence=0.50,
 
+            status="ACTIVE",
+
             created_by=trigger
 
         )
@@ -47,6 +58,16 @@ class HypothesisManager:
         reasoning_state.active_hypotheses.append(
             hypothesis
         )
+
+
+        if hasattr(
+            reasoning_state,
+            "hypotheses"
+        ):
+
+            reasoning_state.hypotheses.append(
+                hypothesis
+            )
 
 
         return hypothesis
@@ -59,7 +80,7 @@ class HypothesisManager:
     ):
 
         for hypothesis in (
-            reasoning_state.active_hypotheses
+            reasoning_state.hypotheses
         ):
 
             if hypothesis.name == hypothesis_name:
@@ -75,6 +96,11 @@ class HypothesisManager:
         hypothesis,
         evidence
     ):
+
+        if hypothesis.status != "ACTIVE":
+
+            return
+
 
         if evidence not in (
             hypothesis.supporting_evidence
@@ -123,6 +149,11 @@ class HypothesisManager:
         evidence
     ):
 
+        if hypothesis.status != "ACTIVE":
+
+            return
+
+
         if evidence not in (
             hypothesis.contradicting_evidence
         ):
@@ -169,6 +200,11 @@ class HypothesisManager:
         hypothesis
     ):
 
+        if hypothesis.status != "ACTIVE":
+
+            return False
+
+
         self.confidence_tracker.update(
 
             hypothesis,
@@ -180,9 +216,10 @@ class HypothesisManager:
         )
 
 
-        hypothesis.status = (
-            "CONFIRMED"
-        )
+        hypothesis.status = "CONFIRMED"
+
+
+        return True
 
 
     def reject(
@@ -191,9 +228,12 @@ class HypothesisManager:
         hypothesis
     ):
 
-        hypothesis.status = (
-            "REJECTED"
-        )
+        if hypothesis.status != "ACTIVE":
+
+            return False
+
+
+        hypothesis.status = "REJECTED"
 
 
         if hypothesis not in (
@@ -212,3 +252,6 @@ class HypothesisManager:
             reasoning_state.active_hypotheses.remove(
                 hypothesis
             )
+
+
+        return True
