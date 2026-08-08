@@ -22,6 +22,17 @@ class HypothesisManager:
         trigger=None
     ):
 
+        existing = self.find(
+            reasoning_state,
+            hypothesis_name
+        )
+
+
+        if existing is not None:
+
+            return existing
+
+
         hypothesis = Hypothesis(
 
             name=hypothesis_name,
@@ -39,7 +50,6 @@ class HypothesisManager:
 
 
         return hypothesis
-
 
 
     def find(
@@ -60,15 +70,25 @@ class HypothesisManager:
         return None
 
 
-
     def add_supporting_evidence(
         self,
         hypothesis,
         evidence
     ):
 
-        hypothesis.supporting_evidence.append(
-            evidence
+        if evidence not in (
+            hypothesis.supporting_evidence
+        ):
+
+            hypothesis.supporting_evidence.append(
+                evidence
+            )
+
+
+        strength = getattr(
+            evidence,
+            "strength",
+            1.0
         )
 
 
@@ -76,7 +96,7 @@ class HypothesisManager:
 
             hypothesis,
 
-            0.15,
+            0.15 * strength,
 
             "SUPPORTING_EVIDENCE",
 
@@ -85,6 +105,17 @@ class HypothesisManager:
         )
 
 
+        if hasattr(
+            evidence,
+            "supports"
+        ):
+
+            if hypothesis.name not in evidence.supports:
+
+                evidence.supports.append(
+                    hypothesis.name
+                )
+
 
     def add_contradicting_evidence(
         self,
@@ -92,8 +123,19 @@ class HypothesisManager:
         evidence
     ):
 
-        hypothesis.contradicting_evidence.append(
-            evidence
+        if evidence not in (
+            hypothesis.contradicting_evidence
+        ):
+
+            hypothesis.contradicting_evidence.append(
+                evidence
+            )
+
+
+        strength = getattr(
+            evidence,
+            "strength",
+            1.0
         )
 
 
@@ -101,7 +143,7 @@ class HypothesisManager:
 
             hypothesis,
 
-            -0.20,
+            -0.20 * strength,
 
             "CONTRADICTING_EVIDENCE",
 
@@ -109,6 +151,17 @@ class HypothesisManager:
 
         )
 
+
+        if hasattr(
+            evidence,
+            "contradicts"
+        ):
+
+            if hypothesis.name not in evidence.contradicts:
+
+                evidence.contradicts.append(
+                    hypothesis.name
+                )
 
 
     def confirm(
@@ -132,7 +185,6 @@ class HypothesisManager:
         )
 
 
-
     def reject(
         self,
         reasoning_state,
@@ -144,11 +196,19 @@ class HypothesisManager:
         )
 
 
-        reasoning_state.rejected_hypotheses.append(
-            hypothesis
-        )
+        if hypothesis not in (
+            reasoning_state.rejected_hypotheses
+        ):
+
+            reasoning_state.rejected_hypotheses.append(
+                hypothesis
+            )
 
 
-        reasoning_state.active_hypotheses.remove(
-            hypothesis
-        )
+        if hypothesis in (
+            reasoning_state.active_hypotheses
+        ):
+
+            reasoning_state.active_hypotheses.remove(
+                hypothesis
+            )
