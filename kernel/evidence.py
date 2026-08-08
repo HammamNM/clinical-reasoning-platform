@@ -1,19 +1,31 @@
 from dataclasses import dataclass, field
-from datetime import datetime
-from typing import Any, Dict
+import uuid
+
 
 
 @dataclass
 class Evidence:
 
-    evidence_id: str
 
-    evidence_type: str
-
-    source: str
-
-    content: Dict[str, Any]
-
-    timestamp: str = field(
-        default_factory=lambda: datetime.utcnow().isoformat()
+    evidence_id: str = field(
+        default_factory=lambda: str(uuid.uuid4())
     )
+
+
+    source: str = ""
+
+
+    content: str = ""
+
+
+    supports: list = field(
+        default_factory=list
+    )
+
+
+    contradicts: list = field(
+        default_factory=list
+    )
+
+
+    strength: float = 0.0
