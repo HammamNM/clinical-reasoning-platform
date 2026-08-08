@@ -1,19 +1,22 @@
 from dataclasses import dataclass, field
+from datetime import datetime
 
 
 @dataclass
-class ConfidenceChange:
+class ConfidenceUpdate:
 
-    old_value: float
-
-    new_value: float
+    previous: float
 
     change: float
 
+    current: float
+
     reason: str
 
-    evidence: dict = field(
-        default_factory=dict
+    evidence: object = None
+
+    timestamp: str = field(
+        default_factory=lambda: datetime.utcnow().isoformat()
     )
 
 
@@ -21,42 +24,29 @@ class ConfidenceTracker:
 
 
     def update(
-
         self,
-
         hypothesis,
-
-        delta,
-
+        change,
         reason,
-
         evidence=None
-
     ):
 
-        old_value = (
-            hypothesis.confidence
-        )
+        previous = hypothesis.confidence
 
 
-        new_value = max(
+        current = previous + change
 
+
+        current = max(
             0.0,
-
             min(
-
                 1.0,
-
-                old_value + delta
-
+                current
             )
-
         )
 
 
-        hypothesis.confidence = (
-            new_value
-        )
+        hypothesis.confidence = current
 
 
         if not hasattr(
@@ -67,23 +57,24 @@ class ConfidenceTracker:
             hypothesis.confidence_history = []
 
 
-        hypothesis.confidence_history.append(
+        update = ConfidenceUpdate(
 
-            ConfidenceChange(
+            previous=previous,
 
-                old_value=old_value,
+            change=change,
 
-                new_value=new_value,
+            current=current,
 
-                change=delta,
+            reason=reason,
 
-                reason=reason,
-
-                evidence=evidence or {}
-
-            )
+            evidence=evidence
 
         )
 
 
-        return new_value
+        hypothesis.confidence_history.append(
+            update
+        )
+
+
+        return update
