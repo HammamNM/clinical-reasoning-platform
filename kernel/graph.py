@@ -1,4 +1,16 @@
 from dataclasses import dataclass
+from enum import Enum
+
+
+class EdgeRelation(Enum):
+
+    SEQUENCE = "SEQUENCE"
+
+    SUPPORTS = "SUPPORTS"
+
+    CONTRADICTS = "CONTRADICTS"
+
+    DERIVED_FROM = "DERIVED_FROM"
 
 
 @dataclass
@@ -8,8 +20,7 @@ class Edge:
 
     target: str
 
-    relation: str = "NEXT"
-
+    relation: EdgeRelation = EdgeRelation.SEQUENCE
 
 
 class ReasoningGraph:
@@ -22,13 +33,9 @@ class ReasoningGraph:
         self.edges = []
 
 
-
     def add_node(
-
         self,
-
         node
-
     ):
 
         self.nodes.append(
@@ -36,18 +43,40 @@ class ReasoningGraph:
         )
 
 
-
     def add_edge(
-
         self,
-
         source,
-
         target,
-
-        relation="NEXT"
-
+        relation=EdgeRelation.SEQUENCE
     ):
+
+        if isinstance(
+            relation,
+            str
+        ):
+
+            try:
+
+                relation = EdgeRelation(
+                    relation
+                )
+
+            except ValueError:
+
+                raise ValueError(
+                    f"Unknown edge relation: {relation}"
+                )
+
+
+        if not isinstance(
+            relation,
+            EdgeRelation
+        ):
+
+            raise TypeError(
+                "relation must be EdgeRelation"
+            )
+
 
         self.edges.append(
 
@@ -64,13 +93,9 @@ class ReasoningGraph:
         )
 
 
-
     def outgoing_edges(
-
         self,
-
         node_id
-
     ):
 
         return [
@@ -84,13 +109,9 @@ class ReasoningGraph:
         ]
 
 
-
     def incoming_edges(
-
         self,
-
         node_id
-
     ):
 
         return [
@@ -100,5 +121,31 @@ class ReasoningGraph:
             for edge in self.edges
 
             if edge.target == node_id
+
+        ]
+
+
+    def edges_by_relation(
+        self,
+        relation
+    ):
+
+        if isinstance(
+            relation,
+            str
+        ):
+
+            relation = EdgeRelation(
+                relation
+            )
+
+
+        return [
+
+            edge
+
+            for edge in self.edges
+
+            if edge.relation == relation
 
         ]
