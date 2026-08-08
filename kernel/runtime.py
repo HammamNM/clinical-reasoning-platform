@@ -212,6 +212,13 @@ class KernelRuntime:
         hypothesis_name
     ):
 
+        return self.graph_builder.find_hypothesis_node(
+            hypothesis_name
+        )
+        
+        
+    
+
         for node in self.graph_builder.graph.nodes:
 
             if node.primitive.value != "HYPOTHESIS":
