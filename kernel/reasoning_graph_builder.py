@@ -3,8 +3,10 @@ from kernel.models import (
     PrimitiveType
 )
 
-from kernel.graph import (
-    ReasoningGraph
+from kernel.graph import ReasoningGraph
+
+from kernel.provenance import (
+    ProvenanceRecord
 )
 
 
@@ -19,8 +21,9 @@ class ReasoningGraphBuilder:
 
         self.counter = 0
 
-        self.last_node_id = None
+        self.last_hypothesis_node = None
 
+        self.last_investigation_node = None
 
 
     def create_node_id(
@@ -34,18 +37,15 @@ class ReasoningGraphBuilder:
         )
 
 
-
     def process_event(
         self,
         event
     ):
 
         primitive = (
-
             self.classify_event(
                 event
             )
-
         )
 
 
@@ -62,6 +62,14 @@ class ReasoningGraphBuilder:
 
             content=str(
                 event.payload
+            ),
+
+            provenance=ProvenanceRecord(
+
+                source=event.source,
+
+                event_type=event.event_type
+
             )
 
         )
@@ -72,16 +80,22 @@ class ReasoningGraphBuilder:
         )
 
 
+        if primitive == PrimitiveType.HYPOTHESIS:
+
+            self.last_hypothesis_node = node.id
+
+
+        if primitive == PrimitiveType.INVESTIGATION:
+
+            self.last_investigation_node = node.id
+
+
         self.connect_previous(
             node.id
         )
 
 
-        self.last_node_id = node.id
-
-
         return node
-
 
 
     def classify_event(
@@ -105,11 +119,9 @@ class ReasoningGraphBuilder:
         event_type = event.event_type
 
 
-
         if event_type == "OUTCOME_UPDATED":
 
             return PrimitiveType.OUTCOME
-
 
 
         if event_type == "INVESTIGATION_RESULT":
@@ -117,11 +129,9 @@ class ReasoningGraphBuilder:
             return PrimitiveType.INVESTIGATION
 
 
-
         if event_type == "DECISION_ASSESSMENT":
 
             return PrimitiveType.DECISION
-
 
 
         if event_type == "ACTION":
@@ -134,13 +144,11 @@ class ReasoningGraphBuilder:
                 return PrimitiveType.OBSERVATION
 
 
-
             if action.startswith(
                 "ORDER_"
             ):
 
                 return PrimitiveType.INVESTIGATION
-
 
 
             if action.startswith(
@@ -150,7 +158,6 @@ class ReasoningGraphBuilder:
                 return PrimitiveType.HYPOTHESIS
 
 
-
             if action.startswith(
                 "TREAT_"
             ):
@@ -158,9 +165,7 @@ class ReasoningGraphBuilder:
                 return PrimitiveType.DECISION
 
 
-
         return None
-
 
 
     def connect_previous(
@@ -168,31 +173,30 @@ class ReasoningGraphBuilder:
         current_id
     ):
 
-        if self.last_node_id is None:
+        nodes = self.graph.nodes
+
+
+        if len(nodes) < 2:
 
             return
 
 
+        previous = nodes[-2]
+
+
         self.graph.add_edge(
 
-            self.last_node_id,
+            previous.id,
 
-            current_id,
-
-            relation="NEXT"
+            current_id
 
         )
 
 
-
     def connect_support(
-
         self,
-
         evidence_node_id,
-
         hypothesis_node_id
-
     ):
 
         self.graph.add_edge(
@@ -206,15 +210,10 @@ class ReasoningGraphBuilder:
         )
 
 
-
     def connect_contradiction(
-
         self,
-
         evidence_node_id,
-
         hypothesis_node_id
-
     ):
 
         self.graph.add_edge(
