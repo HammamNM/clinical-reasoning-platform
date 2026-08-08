@@ -1,4 +1,6 @@
-from kernel.runtime import KernelRuntime
+from kernel.runtime import (
+    KernelRuntime
+)
 
 from kernel.adapters.session_adapter import (
     ClinicalSessionAdapter
@@ -20,6 +22,11 @@ from kernel.adapters.investigation_adapter import (
     InvestigationEngineAdapter
 )
 
+from kernel.adapters.scenario_adapter import (
+    ScenarioEngineAdapter
+)
+
+
 from decision_engine.engine import (
     DecisionEngine
 )
@@ -36,9 +43,10 @@ from simulation.investigation_engine import (
     InvestigationEngine
 )
 
-from kernel.transition_engine import (
-    TransitionEngine
+from simulation.scenario_engine import (
+    ScenarioEngine
 )
+
 
 
 class KernelBootstrap:
@@ -46,14 +54,17 @@ class KernelBootstrap:
 
     def create_runtime(
         self,
-        clinical_session
+        clinical_session,
+        scenario
     ):
 
 
         session_adapter = (
+
             ClinicalSessionAdapter(
                 clinical_session
             )
+
         )
 
 
@@ -74,8 +85,11 @@ class KernelBootstrap:
         runtime.register_engine(
 
             OutcomeEngineAdapter(
+
                 OutcomeEngine(),
+
                 OutcomeMapper()
+
             )
 
         )
@@ -84,7 +98,9 @@ class KernelBootstrap:
         runtime.register_engine(
 
             InvestigationEngineAdapter(
+
                 InvestigationEngine()
+
             )
 
         )
@@ -93,6 +109,19 @@ class KernelBootstrap:
         runtime.register_engine(
 
             EvidenceEngine()
+
+        )
+
+
+        runtime.register_engine(
+
+            ScenarioEngineAdapter(
+
+                ScenarioEngine(
+                    scenario
+                )
+
+            )
 
         )
 
