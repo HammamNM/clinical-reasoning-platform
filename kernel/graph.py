@@ -12,6 +12,10 @@ class EdgeRelation(Enum):
 
     DERIVED_FROM = "DERIVED_FROM"
 
+    CONFIRMS = "CONFIRMS"
+
+    REJECTS = "REJECTS"
+
 
 @dataclass
 class Edge:
