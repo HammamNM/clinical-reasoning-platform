@@ -1,3 +1,8 @@
+from kernel.graph import (
+    EdgeRelation
+)
+
+
 class QueryEngine:
 
 
@@ -10,11 +15,8 @@ class QueryEngine:
 
 
     def nodes_by_primitive(
-
         self,
-
         primitive
-
     ):
 
         return [
@@ -29,11 +31,8 @@ class QueryEngine:
 
 
     def node_by_id(
-
         self,
-
         node_id
-
     ):
 
         for node in self.graph.nodes:
@@ -46,12 +45,19 @@ class QueryEngine:
 
 
     def edges_by_relation(
-
         self,
-
         relation
-
     ):
+
+        if isinstance(
+            relation,
+            str
+        ):
+
+            relation = EdgeRelation(
+                relation
+            )
+
 
         return [
 
@@ -65,11 +71,8 @@ class QueryEngine:
 
 
     def outgoing(
-
         self,
-
         node_id
-
     ):
 
         return self.graph.outgoing_edges(
@@ -78,11 +81,8 @@ class QueryEngine:
 
 
     def incoming(
-
         self,
-
         node_id
-
     ):
 
         return self.graph.incoming_edges(
@@ -91,14 +91,20 @@ class QueryEngine:
 
 
     def outgoing_by_relation(
-
         self,
-
         node_id,
-
         relation
-
     ):
+
+        if isinstance(
+            relation,
+            str
+        ):
+
+            relation = EdgeRelation(
+                relation
+            )
+
 
         return [
 
@@ -114,14 +120,20 @@ class QueryEngine:
 
 
     def incoming_by_relation(
-
         self,
-
         node_id,
-
         relation
-
     ):
+
+        if isinstance(
+            relation,
+            str
+        ):
+
+            relation = EdgeRelation(
+                relation
+            )
+
 
         return [
 
@@ -136,12 +148,9 @@ class QueryEngine:
         ]
 
 
-        def next_nodes(
-
+    def next_nodes(
         self,
-
         node_id
-
     ):
 
         return [
@@ -154,20 +163,16 @@ class QueryEngine:
 
                 node_id,
 
-                "NEXT"
+                EdgeRelation.SEQUENCE
 
             )
 
         ]
 
 
-
     def previous_nodes(
-
         self,
-
         node_id
-
     ):
 
         return [
@@ -180,26 +185,23 @@ class QueryEngine:
 
                 node_id,
 
-                "NEXT"
+                EdgeRelation.SEQUENCE
 
             )
 
         ]
 
-    
+
     def hypotheses_supported_by(
-
         self,
-
         minimum_support=1
-
     ):
 
         support_counter = {}
 
 
         for edge in self.edges_by_relation(
-            "SUPPORTS"
+            EdgeRelation.SUPPORTS
         ):
 
             support_counter.setdefault(
@@ -237,16 +239,14 @@ class QueryEngine:
 
 
     def hypotheses_with_contradictions(
-
         self
-
     ):
 
         contradiction_targets = set()
 
 
         for edge in self.edges_by_relation(
-            "CONTRADICTS"
+            EdgeRelation.CONTRADICTS
         ):
 
             contradiction_targets.add(
@@ -261,5 +261,103 @@ class QueryEngine:
             for node in self.graph.nodes
 
             if node.id in contradiction_targets
+
+        ]
+
+
+    def confirmed_hypotheses(
+        self
+    ):
+
+        confirmed_targets = set()
+
+
+        for edge in self.edges_by_relation(
+            EdgeRelation.CONFIRMS
+        ):
+
+            confirmed_targets.add(
+                edge.target
+            )
+
+
+        return [
+
+            node
+
+            for node in self.graph.nodes
+
+            if node.id in confirmed_targets
+
+        ]
+
+
+    def rejected_hypotheses(
+        self
+    ):
+
+        rejected_targets = set()
+
+
+        for edge in self.edges_by_relation(
+            EdgeRelation.REJECTS
+        ):
+
+            rejected_targets.add(
+                edge.target
+            )
+
+
+        return [
+
+            node
+
+            for node in self.graph.nodes
+
+            if node.id in rejected_targets
+
+        ]
+
+
+    def evidence_supporting(
+        self,
+        hypothesis_node_id
+    ):
+
+        return [
+
+            self.node_by_id(
+                edge.source
+            )
+
+            for edge in self.incoming_by_relation(
+
+                hypothesis_node_id,
+
+                EdgeRelation.SUPPORTS
+
+            )
+
+        ]
+
+
+    def evidence_contradicting(
+        self,
+        hypothesis_node_id
+    ):
+
+        return [
+
+            self.node_by_id(
+                edge.source
+            )
+
+            for edge in self.incoming_by_relation(
+
+                hypothesis_node_id,
+
+                EdgeRelation.CONTRADICTS
+
+            )
 
         ]
