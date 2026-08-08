@@ -1,6 +1,5 @@
-from simulation.action_processor import (
-    ActionProcessor
-)
+from kernel.events import ReasoningEvent
+
 
 
 class SimulationOrchestrator:
@@ -13,23 +12,26 @@ class SimulationOrchestrator:
 
         self.runtime = runtime
 
-        self.action_processor = (
-            ActionProcessor()
-        )
-
 
 
     def process_student_action(
         self,
-        action,
-        payload=None
+        action
     ):
 
-        event = (
-            self.action_processor.process(
-                action,
-                payload
-            )
+
+        event = ReasoningEvent(
+
+            event_type="ACTION",
+
+            payload={
+
+                "action": action
+
+            },
+
+            source="STUDENT"
+
         )
 
 
@@ -46,6 +48,7 @@ class SimulationOrchestrator:
         self,
         actions
     ):
+
 
         for action in actions:
 
