@@ -155,7 +155,20 @@ class ReasoningGraphBuilder:
 
         if event_type == "ACTION":
 
+        if action.startswith(
+            "CONFIRM_"
+        ):
 
+            return PrimitiveType.HYPOTHESIS_UPDATE
+
+
+        if action.startswith(
+            "REJECT_"
+        ):
+
+         
+            return PrimitiveType.HYPOTHESIS_UPDATE
+            
             if action.startswith(
                 "ASK_"
             ):
