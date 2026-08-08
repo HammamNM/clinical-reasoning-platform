@@ -6,9 +6,11 @@ class Hypothesis:
 
     name: str
 
-    confidence: float = 0.0
+    confidence: float = 0.50
 
     status: str = "ACTIVE"
+
+    created_by: str = None
 
     supporting_evidence: list = field(
         default_factory=list
@@ -21,7 +23,3 @@ class Hypothesis:
     confidence_history: list = field(
         default_factory=list
     )
-
-    created_by: str | None = None
-
-    last_updated: str | None = None
