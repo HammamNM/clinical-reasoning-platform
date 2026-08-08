@@ -114,6 +114,60 @@ class ReasoningGraphBuilder:
         )
 
 
+        if primitive == PrimitiveType.HYPOTHESIS_UPDATE:
+
+            action = event.payload.get(
+                "action",
+                ""
+            )
+
+
+            hypothesis_name = (
+                action.replace(
+                    "CONFIRM_",
+                    "DIAGNOSIS_"
+                ).replace(
+                    "REJECT_",
+                    "DIAGNOSIS_"
+                )
+            )
+
+
+            hypothesis_node = (
+                self.find_hypothesis_node(
+                    hypothesis_name
+                )
+            )
+
+
+            if hypothesis_node is not None:
+
+                if action.startswith(
+                    "CONFIRM_"
+                ):
+
+                    self.connect_confirmation(
+
+                        node.id,
+
+                        hypothesis_node.id
+
+                    )
+
+
+                elif action.startswith(
+                    "REJECT_"
+                ):
+
+                    self.connect_rejection(
+
+                        node.id,
+
+                        hypothesis_node.id
+
+                    )
+
+
         return node
 
 
@@ -155,20 +209,6 @@ class ReasoningGraphBuilder:
 
         if event_type == "ACTION":
 
-        if action.startswith(
-            "CONFIRM_"
-        ):
-
-            return PrimitiveType.HYPOTHESIS_UPDATE
-
-
-        if action.startswith(
-            "REJECT_"
-        ):
-
-         
-            return PrimitiveType.HYPOTHESIS_UPDATE
-            
             if action.startswith(
                 "ASK_"
             ):
@@ -188,6 +228,20 @@ class ReasoningGraphBuilder:
             ):
 
                 return PrimitiveType.HYPOTHESIS
+
+
+            if action.startswith(
+                "CONFIRM_"
+            ):
+
+                return PrimitiveType.HYPOTHESIS_UPDATE
+
+
+            if action.startswith(
+                "REJECT_"
+            ):
+
+                return PrimitiveType.HYPOTHESIS_UPDATE
 
 
             if action.startswith(
@@ -286,6 +340,8 @@ class ReasoningGraphBuilder:
             EdgeRelation.CONTRADICTS
 
         )
+
+
     def connect_confirmation(
         self,
         action_node_id,
