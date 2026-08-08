@@ -1,10 +1,9 @@
-from kernel.evidence import (
-    Evidence
+from kernel.evidence import Evidence
+
+from kernel.confidence_engine import (
+    ConfidenceEngine
 )
 
-from kernel.hypothesis_manager import (
-    HypothesisManager
-)
 
 
 class EvidenceEngine:
@@ -12,9 +11,10 @@ class EvidenceEngine:
 
     def __init__(self):
 
-        self.hypothesis_manager = (
-            HypothesisManager()
+        self.confidence_engine = (
+            ConfidenceEngine()
         )
+
 
 
     def process_event(
@@ -23,39 +23,64 @@ class EvidenceEngine:
         session
     ):
 
-        if event.event_type != (
-            "INVESTIGATION_RESULT"
-        ):
+
+        if event.event_type != "INVESTIGATION_RESULT":
 
             return None
 
 
+
+        result = event.payload.get(
+            "result",
+            {}
+        )
+
+
         evidence = Evidence(
-
-            evidence_id=event.event_id,
-
-            evidence_type=event.event_type,
 
             source=event.source,
 
-            content=event.payload
+            content=str(result),
+
+            strength=0.2
 
         )
 
 
-        for hypothesis in (
-
-            session.reasoning_state.active_hypotheses
-
+        if not hasattr(
+            session,
+            "evidence"
         ):
 
-            self.hypothesis_manager.add_supporting_evidence(
+            session.evidence = []
+
+
+
+        session.evidence.append(
+            evidence
+        )
+
+
+
+        hypotheses = getattr(
+            session.reasoning_state,
+            "hypotheses",
+            []
+        )
+
+
+
+        for hypothesis in hypotheses:
+
+
+            self.confidence_engine.update_from_evidence(
 
                 hypothesis,
 
                 evidence
 
             )
+
 
 
         return None
