@@ -47,6 +47,7 @@ from simulation.scenario_engine import (
     ScenarioEngine
 )
 
+from simulation.time_engine import TimeEngine
 
 
 class KernelBootstrap:
@@ -132,5 +133,10 @@ class KernelBootstrap:
 
         )
 
+        runtime.register_engine(
+
+            TimeEngine()
+
+        )
 
         return runtime
