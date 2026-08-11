@@ -164,3 +164,12 @@ def test_nstemi_full_flow():
         is True
 
     )
+
+
+    if __name__ == "__main__":
+
+    test_nstemi_full_flow()
+
+    print(
+        "END-TO-END TEST PASSED"
+    )
