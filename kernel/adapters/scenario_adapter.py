@@ -1,5 +1,6 @@
-from kernel.events import ReasoningEvent
-
+from kernel.events import (
+    ReasoningEvent
+)
 
 
 class ScenarioEngineAdapter:
@@ -10,8 +11,9 @@ class ScenarioEngineAdapter:
         scenario_engine
     ):
 
-        self.scenario_engine = scenario_engine
-
+        self.scenario_engine = (
+            scenario_engine
+        )
 
 
     def process_event(
@@ -35,9 +37,7 @@ class ScenarioEngineAdapter:
             return None
 
 
-
-        new_state = (
-
+        generated_events = (
             self.scenario_engine.process_action(
 
                 action,
@@ -45,32 +45,31 @@ class ScenarioEngineAdapter:
                 session
 
             )
-
         )
 
 
-        if new_state is None:
+        if generated_events is None:
 
             return None
 
 
+        if isinstance(
+            generated_events,
+            ReasoningEvent
+        ):
 
-        return ReasoningEvent(
+            return generated_events
 
-            event_type="STATE_CHANGED",
 
-            payload={
+        return [
 
-                "state":
+            generated_event
 
-                    new_state,
+            for generated_event in generated_events
 
-                "trigger":
+            if isinstance(
+                generated_event,
+                ReasoningEvent
+            )
 
-                    action
-
-            },
-
-            source="SCENARIO_ADAPTER"
-
-        )
+        ]
