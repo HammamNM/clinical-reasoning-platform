@@ -1,51 +1,117 @@
-from kernel.events import ReasoningEvent
+from kernel.events import (
+    ReasoningEvent
+)
+
 
 class InvestigationEngine:
 
-def process_event(  
-    self,  
-    event,  
-    session  
-):  
 
-    if event.event_type != "ACTION":  
+    def process_event(
+        self,
+        event,
+        session
+    ):
 
-        return None  
+        if event.event_type != "ACTION":
 
-
-    investigations = (  
-        session.active_case.get(  
-            "investigations",  
-            {}  
-        )  
-    )  
+            return None
 
 
-    action = event.payload.get(  
-        "action"  
-    )  
+        action = event.payload.get(
+            "action"
+        )
 
 
-    if action not in investigations:  
+        if not action:
 
-        return None  
-
-
-    result = investigations[action]  
+            return None
 
 
-    return ReasoningEvent(  
+        scenario = getattr(
+            session,
+            "scenario",
+            None
+        )
 
-        event_type="INVESTIGATION_RESULT",  
 
-        payload={  
+        if scenario is None:
 
-            "action": action,  
+            return None
 
-            "result": result  
 
-        },  
+        investigations = (
+            scenario.investigations
+        )
 
-        source="INVESTIGATION_ENGINE"  
 
-    )
+        investigation_id = (
+            self.get_investigation_id(
+                action,
+                scenario
+            )
+        )
+
+
+        if investigation_id is None:
+
+            return None
+
+
+        investigation = investigations.get(
+            investigation_id
+        )
+
+
+        if investigation is None:
+
+            return None
+
+
+        return ReasoningEvent(
+
+            event_type="INVESTIGATION_RESULT",
+
+            payload={
+
+                "action":
+                    action,
+
+                "investigation_id":
+                    investigation_id,
+
+                "result":
+                    investigation
+
+            },
+
+            source="INVESTIGATION_ENGINE"
+
+        )
+
+
+    def get_investigation_id(
+        self,
+        action,
+        scenario
+    ):
+
+        action_config = (
+            scenario.metadata
+            .get(
+                "actions",
+                {}
+            )
+            .get(
+                action
+            )
+        )
+
+
+        if action_config is None:
+
+            return None
+
+
+        return action_config.get(
+            "investigation_id"
+        )
