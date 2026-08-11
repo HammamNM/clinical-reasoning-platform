@@ -28,14 +28,12 @@ class ReasoningEvent:
     )
 
 
-
 class EventStream:
 
 
     def __init__(self):
 
-        self.events = []
-
+        self._events = []
 
 
     def publish(
@@ -47,15 +45,15 @@ class EventStream:
             event,
             ReasoningEvent
         ):
+
             raise TypeError(
                 "EventStream accepts only ReasoningEvent"
             )
 
 
-        self.events.append(
+        self._events.append(
             event
         )
-
 
 
     def get_all(
@@ -63,9 +61,8 @@ class EventStream:
     ):
 
         return list(
-            self.events
+            self._events
         )
-
 
 
     def get_by_type(
@@ -74,7 +71,51 @@ class EventStream:
     ):
 
         return [
+
             event
-            for event in self.events
+
+            for event in self._events
+
             if event.event_type == event_type
+
         ]
+
+
+    def get_by_source(
+        self,
+        source
+    ):
+
+        return [
+
+            event
+
+            for event in self._events
+
+            if event.source == source
+
+        ]
+
+
+    def get_by_id(
+        self,
+        event_id
+    ):
+
+        for event in self._events:
+
+            if event.event_id == event_id:
+
+                return event
+
+
+        return None
+
+
+    def count(
+        self
+    ):
+
+        return len(
+            self._events
+        )
