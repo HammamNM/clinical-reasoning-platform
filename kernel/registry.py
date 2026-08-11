@@ -6,26 +6,52 @@ class EngineRegistry:
         self.engines = []
 
 
-
     def register(
         self,
-        engine
+        engine,
+        priority=100
     ):
 
+        if not hasattr(
+            engine,
+            "process_event"
+        ):
+
+            raise TypeError(
+                "Engine must implement process_event"
+            )
+
+
         self.engines.append(
-            engine
+
+            (
+                priority,
+
+                engine
+
+            )
+
         )
 
+
+        self.engines.sort(
+
+            key=lambda item: item[0]
+
+        )
 
 
     def get_engines(
         self
     ):
 
-        return list(
-            self.engines
-        )
+        return [
 
+            engine
+
+            for _, engine in self.engines
+
+        ]
 
 
     def dispatch(
@@ -34,38 +60,75 @@ class EngineRegistry:
         session
     ):
 
+        from kernel.events import (
+            ReasoningEvent
+        )
+
+
         generated_events = []
 
 
-        for engine in self.engines:
+        for _, engine in self.engines:
 
-            if hasattr(
-                engine,
-                "process_event"
+            result = engine.process_event(
+
+                event,
+
+                session
+
+            )
+
+
+            if result is None:
+
+                continue
+
+
+            if isinstance(
+                result,
+                list
             ):
 
-                result = engine.process_event(
-                    event,
-                    session
-                )
+                for generated_event in result:
 
-
-                if result:
-
-                    if isinstance(
-                        result,
-                        list
+                    if not isinstance(
+                        generated_event,
+                        ReasoningEvent
                     ):
 
-                        generated_events.extend(
-                            result
+                        raise TypeError(
+
+                            "Engine generated an invalid event: "
+
+                            f"{type(generated_event).__name__}"
+
                         )
 
-                    else:
 
-                        generated_events.append(
-                            result
-                        )
+                    generated_events.append(
+                        generated_event
+                    )
+
+
+            else:
+
+                if not isinstance(
+                    result,
+                    ReasoningEvent
+                ):
+
+                    raise TypeError(
+
+                        "Engine generated an invalid event: "
+
+                        f"{type(result).__name__}"
+
+                    )
+
+
+                generated_events.append(
+                    result
+                )
 
 
         return generated_events
