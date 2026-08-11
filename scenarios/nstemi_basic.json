@@ -1,0 +1,151 @@
+{
+  "scenario_id": "NSTEMI_BASIC_001",
+  "title": "Acute Chest Pain - NSTEMI",
+  "specialty": "Cardiology",
+  "difficulty": "medium",
+
+  "patient": {
+    "age": 62,
+    "sex": "male",
+    "chief_complaint": "Chest pain",
+    "history": [
+      "central chest pressure",
+      "radiation to left arm",
+      "diaphoresis",
+      "nausea"
+    ],
+    "vital_signs": {
+      "blood_pressure": "148/92",
+      "heart_rate": 96,
+      "respiratory_rate": 18,
+      "oxygen_saturation": 97
+    }
+  },
+
+  "initial_state": {
+    "stage": "INITIAL",
+    "ecg_available": false,
+    "troponin_available": false
+  },
+
+  "available_actions": [
+    "ASK_HISTORY",
+    "ORDER_ECG",
+    "ORDER_TROPONIN",
+    "ORDER_CHEST_XRAY",
+    "DIAGNOSIS_NSTEMI",
+    "DIAGNOSIS_STEMI",
+    "TREAT_ACS"
+  ],
+
+  "investigations": {
+
+    "ECG": {
+      "name": "Electrocardiogram",
+      "result": {
+        "rhythm": "sinus",
+        "st_elevation": false,
+        "st_depression": true,
+        "t_wave_inversion": true
+      }
+    },
+
+    "TROPONIN": {
+      "name": "High-sensitivity troponin",
+      "result": {
+        "value": 186,
+        "unit": "ng/L",
+        "reference": "< 14 ng/L",
+        "interpretation": "elevated"
+      }
+    },
+
+    "CHEST_XRAY": {
+      "name": "Chest X-ray",
+      "result": {
+        "acute_findings": false
+      }
+    }
+  },
+
+  "outcomes": {
+
+    "CORRECT_MANAGEMENT": {
+      "status": "positive",
+      "score": 100,
+      "message": "The reasoning pathway was consistent with the available evidence."
+    },
+
+    "MISSED_NSTEMI": {
+      "status": "negative",
+      "score": 30,
+      "message": "The available evidence was not adequately incorporated into the final reasoning."
+    }
+  },
+
+  "metadata": {
+
+    "initial_stage": "INITIAL",
+
+    "actions": {
+
+      "ASK_HISTORY": {
+        "stage": "INITIAL",
+        "event_type": "ACTION",
+        "result": "Relevant chest-pain history collected.",
+        "next_stage": "ASSESSMENT"
+      },
+
+      "ORDER_ECG": {
+        "stage": "ASSESSMENT",
+        "event_type": "ACTION",
+        "investigation_id": "ECG",
+        "next_stage": "INVESTIGATION"
+      },
+
+      "ORDER_TROPONIN": {
+        "stage": "INVESTIGATION",
+        "event_type": "ACTION",
+        "investigation_id": "TROPONIN",
+        "requires_investigations": [
+          "ECG"
+        ],
+        "next_stage": "POST_INVESTIGATION"
+      },
+
+      "ORDER_CHEST_XRAY": {
+        "stage": "ASSESSMENT",
+        "event_type": "ACTION",
+        "investigation_id": "CHEST_XRAY"
+      },
+
+      "DIAGNOSIS_NSTEMI": {
+        "stage": "POST_INVESTIGATION",
+        "event_type": "ACTION",
+        "requires_investigations": [
+          "ECG",
+          "TROPONIN"
+        ],
+        "result": "NSTEMI suspected."
+      },
+
+      "DIAGNOSIS_STEMI": {
+        "stage": "POST_INVESTIGATION",
+        "event_type": "ACTION",
+        "requires_investigations": [
+          "ECG"
+        ],
+        "result": "STEMI suspected."
+      },
+
+      "TREAT_ACS": {
+        "stage": "POST_INVESTIGATION",
+        "event_type": "ACTION",
+        "requires_actions": [
+          "DIAGNOSIS_NSTEMI"
+        ],
+        "outcome_id": "CORRECT_MANAGEMENT"
+      }
+    }
+  }
+}
