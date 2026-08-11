@@ -26,7 +26,6 @@ from kernel.adapters.scenario_adapter import (
     ScenarioEngineAdapter
 )
 
-
 from decision_engine.engine import (
     DecisionEngine
 )
@@ -43,18 +42,12 @@ from simulation.investigation_engine import (
     InvestigationEngine
 )
 
-from simulation.scenario_engine import (
+from kernel.transition_engine import (
+    TransitionEngine
+)
+
+from kernel.scenario_engine import (
     ScenarioEngine
-)
-
-from simulation.time_engine import TimeEngine
-
-from kernel.adapters.patient_evolution_adapter import (
-    PatientEvolutionAdapter
-)
-
-from simulation.patient_evolution import (
-    PatientEvolutionEngine
 )
 
 
@@ -64,16 +57,13 @@ class KernelBootstrap:
     def create_runtime(
         self,
         clinical_session,
-        scenario
+        scenario=None
     ):
 
-
         session_adapter = (
-
             ClinicalSessionAdapter(
                 clinical_session
             )
-
         )
 
 
@@ -82,11 +72,38 @@ class KernelBootstrap:
         )
 
 
+        # -------------------------------------------------
+        # Register engines
+        # -------------------------------------------------
+
+
+        runtime.register_engine(
+
+            InvestigationEngineAdapter(
+                InvestigationEngine()
+            ),
+
+            priority=20
+
+        )
+
+
+        runtime.register_engine(
+
+            EvidenceEngine(),
+
+            priority=30
+
+        )
+
+
         runtime.register_engine(
 
             DecisionEngineAdapter(
                 DecisionEngine()
-            )
+            ),
+
+            priority=40
 
         )
 
@@ -94,67 +111,62 @@ class KernelBootstrap:
         runtime.register_engine(
 
             OutcomeEngineAdapter(
-
                 OutcomeEngine(),
-
                 OutcomeMapper()
+            ),
 
-            )
-
-        )
-
-
-        runtime.register_engine(
-
-            InvestigationEngineAdapter(
-
-                InvestigationEngine()
-
-            )
+            priority=50
 
         )
 
 
         runtime.register_engine(
 
-            EvidenceEngine()
+            TransitionEngine(),
+
+            priority=60
 
         )
 
 
-        runtime.register_engine(
+        # -------------------------------------------------
+        # Scenario Engine
+        # -------------------------------------------------
 
-            ScenarioEngineAdapter(
 
+        if scenario is not None:
+
+            scenario_engine = (
                 ScenarioEngine(
                     scenario
                 )
+            )
+
+
+            runtime.set_scenario_engine(
+
+                scenario_engine
 
             )
 
-        )
 
+            runtime.register_engine(
 
-        runtime.register_engine(
+                ScenarioEngineAdapter(
+                    scenario_engine
+                ),
 
-            TransitionEngine()
-
-        )
-
-        runtime.register_engine(
-
-            TimeEngine()
-
-        )
-
-        runtime.register_engine(
-
-            PatientEvolutionAdapter(
-
-                PatientEvolutionEngine()
+                priority=10
 
             )
 
-        )
+
+        # -------------------------------------------------
+        # Initialize runtime
+        # -------------------------------------------------
+
+
+        runtime.initialize()
+
 
         return runtime
