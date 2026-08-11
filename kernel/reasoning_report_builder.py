@@ -71,25 +71,30 @@ class ReasoningReportBuilder:
                 ]
 
 
-                history = [
+                history = []
 
-                    {
 
-                        "previous": update.previous,
+                for update in (
+                    hypothesis.confidence_history
+                ):
 
-                        "change": update.change,
+                    history.append(
 
-                        "current": update.current,
+                        {
 
-                        "reason": update.reason
+                            "previous": update.previous,
 
-                    }
+                            "change": update.change,
 
-                    for update in (
-                        hypothesis.confidence_history
+                            "current": update.current,
+
+                            "reason": update.reason,
+
+                            "timestamp": update.timestamp
+
+                        }
+
                     )
-
-                ]
 
 
                 hypothesis_report = HypothesisReport(
