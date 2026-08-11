@@ -39,13 +39,17 @@ class KernelSession:
     )
 
 
-
     decision_history: list = field(
         default_factory=list
     )
 
 
-    outcome = None
+    outcome: object = None
 
 
     scenario_id: str = ""
+
+
+    evidence: list = field(
+        default_factory=list
+    )
