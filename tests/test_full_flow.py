@@ -1,32 +1,36 @@
-from kernel.bootstrap import KernelBootstrap
+from kernel.bootstrap import (
+    KernelBootstrap
+)
 
-from kernel.scenario_loader import ScenarioLoader
+from kernel.scenario_loader import (
+    ScenarioLoader
+)
 
-from kernel.events import ReasoningEvent
+from kernel.events import (
+    ReasoningEvent
+)
 
-
-class ClinicalSession:
-
-    pass
-
+from kernel.session import (
+    KernelSession
+)
 
 
 def test_nstemi_full_flow():
-
 
     loader = ScenarioLoader()
 
 
     scenario = loader.from_json(
-
         "scenarios/nstemi_basic.json"
-
     )
+
+
+    session = KernelSession()
 
 
     runtime = KernelBootstrap().create_runtime(
 
-        ClinicalSession(),
+        session,
 
         scenario
 
@@ -53,7 +57,6 @@ def test_nstemi_full_flow():
     runtime.run_cycle()
 
 
-
     runtime.publish(
 
         ReasoningEvent(
@@ -72,7 +75,6 @@ def test_nstemi_full_flow():
 
 
     runtime.run_cycle()
-
 
 
     runtime.publish(
@@ -95,7 +97,6 @@ def test_nstemi_full_flow():
     runtime.run_cycle()
 
 
-
     runtime.publish(
 
         ReasoningEvent(
@@ -114,7 +115,6 @@ def test_nstemi_full_flow():
 
 
     runtime.run_cycle()
-
 
 
     runtime.publish(
@@ -137,8 +137,9 @@ def test_nstemi_full_flow():
     runtime.run_cycle()
 
 
-
-    events = runtime.session.event_stream.get_all()
+    events = (
+        runtime.session.event_stream.get_all()
+    )
 
 
     types = [
@@ -150,25 +151,34 @@ def test_nstemi_full_flow():
     ]
 
 
-    assert "SCENARIO_INITIALIZED" in types
-
-    assert "INVESTIGATION_RESULT" in types
-
-    assert "OUTCOME_UPDATED" in types
-
-
     assert (
-
-        runtime.scenario_engine.state.ended
-
-        is True
-
+        "SCENARIO_INITIALIZED"
+        in types
     )
 
 
-    if __name__ == "__main__":
+    assert (
+        "INVESTIGATION_RESULT"
+        in types
+    )
+
+
+    assert (
+        "OUTCOME_UPDATED"
+        in types
+    )
+
+
+    assert (
+        runtime.scenario_engine.state.ended
+        is True
+    )
+
+
+if __name__ == "__main__":
 
     test_nstemi_full_flow()
+
 
     print(
         "END-TO-END TEST PASSED"
