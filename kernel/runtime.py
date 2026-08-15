@@ -66,7 +66,14 @@ class KernelRuntime:
             engine,
             priority
         )
+    def set_scenario_engine(
+        self,
+        scenario_engine
+    ):
 
+        self.scenario_engine = (
+            scenario_engine
+        )
 
     def publish(
         self,
