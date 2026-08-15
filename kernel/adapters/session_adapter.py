@@ -17,7 +17,7 @@ class ClinicalSessionAdapter:
 
         self.event_stream = (
             clinical_session.event_stream
-                )
+        )
 
         self.reasoning_state = ReasoningState()
 
@@ -26,6 +26,7 @@ class ClinicalSessionAdapter:
     def session_id(
         self
     ):
+
         return self.clinical_session.session_id
 
 
@@ -33,6 +34,7 @@ class ClinicalSessionAdapter:
     def student_id(
         self
     ):
+
         return self.clinical_session.student_id
 
 
@@ -40,13 +42,24 @@ class ClinicalSessionAdapter:
     def scenario_id(
         self
     ):
+
         return self.clinical_session.scenario_id
+
+
+    @scenario_id.setter
+    def scenario_id(
+        self,
+        value
+    ):
+
+        self.clinical_session.scenario_id = value
 
 
     @property
     def active_case(
         self
     ):
+
         return self.clinical_session.active_case
 
 
@@ -54,6 +67,7 @@ class ClinicalSessionAdapter:
     def outcome(
         self
     ):
+
         return self.clinical_session.outcome
 
 
@@ -61,6 +75,7 @@ class ClinicalSessionAdapter:
     def decision_history(
         self
     ):
+
         return self.clinical_session.decision_history
 
 
@@ -68,6 +83,7 @@ class ClinicalSessionAdapter:
     def state(
         self
     ):
+
         return self.clinical_session.state
 
 
@@ -75,6 +91,7 @@ class ClinicalSessionAdapter:
     def clock(
         self
     ):
+
         return self.clinical_session.clock
 
 
@@ -82,6 +99,7 @@ class ClinicalSessionAdapter:
     def finished(
         self
     ):
+
         return self.clinical_session.finished
 
 
@@ -89,6 +107,7 @@ class ClinicalSessionAdapter:
     def metadata(
         self
     ):
+
         return getattr(
             self.clinical_session,
             "metadata",
