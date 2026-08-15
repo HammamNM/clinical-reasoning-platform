@@ -1,7 +1,9 @@
 class EngineRegistry:
 
 
-    def __init__(self):
+    def __init__(
+        self
+    ):
 
         self.engines = []
 
@@ -9,30 +11,17 @@ class EngineRegistry:
     def register(
         self,
         engine,
-        priority=100
+        priority=0
     ):
-
-        if not hasattr(
-            engine,
-            "process_event"
-        ):
-
-            raise TypeError(
-                "Engine must implement process_event"
-            )
-
 
         self.engines.append(
 
             (
                 priority,
-
                 engine
-
             )
 
         )
-
 
         self.engines.sort(
 
@@ -49,7 +38,8 @@ class EngineRegistry:
 
             engine
 
-            for _, engine in self.engines
+            for priority, engine
+            in self.engines
 
         ]
 
@@ -60,15 +50,18 @@ class EngineRegistry:
         session
     ):
 
-        from kernel.events import (
-            ReasoningEvent
-        )
-
-
         generated_events = []
 
 
-        for _, engine in self.engines:
+        for priority, engine in self.engines:
+
+            if not hasattr(
+                engine,
+                "process_event"
+            ):
+
+                continue
+
 
             result = engine.process_event(
 
@@ -89,42 +82,11 @@ class EngineRegistry:
                 list
             ):
 
-                for generated_event in result:
-
-                    if not isinstance(
-                        generated_event,
-                        ReasoningEvent
-                    ):
-
-                        raise TypeError(
-
-                            "Engine generated an invalid event: "
-
-                            f"{type(generated_event).__name__}"
-
-                        )
-
-
-                    generated_events.append(
-                        generated_event
-                    )
-
+                generated_events.extend(
+                    result
+                )
 
             else:
-
-                if not isinstance(
-                    result,
-                    ReasoningEvent
-                ):
-
-                    raise TypeError(
-
-                        "Engine generated an invalid event: "
-
-                        f"{type(result).__name__}"
-
-                    )
-
 
                 generated_events.append(
                     result
