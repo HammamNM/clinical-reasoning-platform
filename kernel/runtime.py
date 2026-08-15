@@ -74,7 +74,15 @@ class KernelRuntime:
         self.scenario_engine = (
             scenario_engine
         )
+    def initialize(
+        self
+    ):
 
+        self.event_queue = []
+
+        self.last_report = None
+
+        return self
     def publish(
         self,
         event
