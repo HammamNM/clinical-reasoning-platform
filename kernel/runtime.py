@@ -55,6 +55,8 @@ class KernelRuntime:
 
         self.last_report = None
 
+        self.scenario_engine = None
+
 
     def register_engine(
         self,
@@ -66,6 +68,8 @@ class KernelRuntime:
             engine,
             priority
         )
+
+
     def set_scenario_engine(
         self,
         scenario_engine
@@ -74,6 +78,8 @@ class KernelRuntime:
         self.scenario_engine = (
             scenario_engine
         )
+
+
     def initialize(
         self
     ):
@@ -82,7 +88,42 @@ class KernelRuntime:
 
         self.last_report = None
 
+
+        if self.scenario_engine is not None:
+
+            event = (
+                self.scenario_engine.initialize(
+                    self.session
+                )
+            )
+
+
+            if event is not None:
+
+                if isinstance(
+                    event,
+                    list
+                ):
+
+                    for generated_event in event:
+
+                        self.publish(
+                            generated_event
+                        )
+
+                else:
+
+                    self.publish(
+                        event
+                    )
+
+
+        self.run_cycle()
+
+
         return self
+
+
     def publish(
         self,
         event
