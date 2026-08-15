@@ -30,13 +30,6 @@ class ScenarioEngine:
         )
 
 
-        session.state.update(
-
-            self.scenario.initial_state
-
-        )
-
-
         self.state.variables = dict(
 
             self.scenario.initial_state
