@@ -58,8 +58,18 @@ class KernelRuntime:
 
     def register_engine(
         self,
-        engine
+        engine,
+        priority=0
     ):
+        
+
+    self.registry.register(
+        engine,
+        priority
+    )
+        
+        
+    
 
         self.registry.register(
             engine
