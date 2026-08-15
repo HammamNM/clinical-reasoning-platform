@@ -10,8 +10,8 @@ from kernel.events import (
     ReasoningEvent
 )
 
-from kernel.session import (
-    KernelSession
+from backend.session import (
+    ClinicalSession
 )
 
 
@@ -19,21 +19,15 @@ def test_nstemi_full_flow():
 
     loader = ScenarioLoader()
 
-
     scenario = loader.from_json(
         "scenarios/nstemi_basic.json"
     )
 
-
-    session = KernelSession()
-
+    session = ClinicalSession()
 
     runtime = KernelBootstrap().create_runtime(
-
         session,
-
         scenario
-
     )
 
 
