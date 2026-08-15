@@ -144,7 +144,7 @@ def test_nstemi_full_flow():
 
     ]
 
-
+    print(types)
     assert (
         "SCENARIO_INITIALIZED"
         in types
