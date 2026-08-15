@@ -122,29 +122,23 @@ class ReasoningGraphBuilder:
             )
 
 
-            hypothesis_name = (
-                action.replace(
-                    "CONFIRM_",
-                    "DIAGNOSIS_"
-                ).replace(
-                    "REJECT_",
-                    "DIAGNOSIS_"
+            if action.startswith(
+                "CONFIRM_"
+            ):
+
+                hypothesis_name = action[
+                    len("CONFIRM_"):
+                ]
+
+
+                hypothesis_node = (
+                    self.find_hypothesis_node(
+                        hypothesis_name
+                    )
                 )
-            )
 
 
-            hypothesis_node = (
-                self.find_hypothesis_node(
-                    hypothesis_name
-                )
-            )
-
-
-            if hypothesis_node is not None:
-
-                if action.startswith(
-                    "CONFIRM_"
-                ):
+                if hypothesis_node is not None:
 
                     self.connect_confirmation(
 
@@ -155,9 +149,23 @@ class ReasoningGraphBuilder:
                     )
 
 
-                elif action.startswith(
-                    "REJECT_"
-                ):
+            elif action.startswith(
+                "REJECT_"
+            ):
+
+                hypothesis_name = action[
+                    len("REJECT_"):
+                ]
+
+
+                hypothesis_node = (
+                    self.find_hypothesis_node(
+                        hypothesis_name
+                    )
+                )
+
+
+                if hypothesis_node is not None:
 
                     self.connect_rejection(
 
