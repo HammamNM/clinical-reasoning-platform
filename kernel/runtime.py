@@ -61,18 +61,10 @@ class KernelRuntime:
         engine,
         priority=0
     ):
-        
-
-    self.registry.register(
-        engine,
-        priority
-    )
-        
-        
-    
 
         self.registry.register(
-            engine
+            engine,
+            priority
         )
 
 
